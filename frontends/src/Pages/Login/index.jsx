@@ -6,7 +6,9 @@ import InputField from '../../components/ui/InputField';
 import Checkbox from '../../components/ui/Checkbox';
 import Button from '../../components/ui/Button';
 import { Globe } from '../../components/magicui/globe';
+import auth from "../../services/auth";
 import { FlickeringGrid } from '../../components/magicui/flickering-grid';
+import {toast} from "react-toastify";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -16,6 +18,8 @@ const LoginPage = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const { login } = auth();
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,10 +49,34 @@ const LoginPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      navigate('/dashboard');
+    if (!validateForm()) return;
+
+    try {
+      const response = await login(formData.email, formData.password);
+      if (response?.token) { // Check for a token or other success indicator
+        toast.success("Login successful!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        });
+        navigate("/"); // Redirect to the dashboard
+      } else {
+        throw new Error(response?.message || "Login failed");
+      }
+    } catch (error) {
+      toast.error(error.message || "An error occurred during login", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
     }
   };
 
