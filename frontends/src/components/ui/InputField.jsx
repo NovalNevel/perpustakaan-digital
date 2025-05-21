@@ -13,6 +13,7 @@ const InputField = ({
   disabled = false,
   error = '',
   className = '',
+  inputClassName = '',
   toggleVisibility = false,
   ...props
 }) => {
@@ -27,52 +28,53 @@ const InputField = ({
 
   return (
     <div className={`flex flex-col ${className}`}>
-     {label && (
-      <label 
-      htmlFor={id} 
-      className="mb-2 text-[20px] font-normal text-[#090446] font-poppins"
-      >
-      {label}
-      </label>
-    )}
+      {label && (
+        <label
+          htmlFor={id}
+          className="mb-2 text-[20px] font-normal text-[#090446] font-poppins"
+        >
+          {label}
+        </label>
+      )}
 
-    <div className="relative">
-    <input
-      type={actualType}
-      id={id}
-      name={name}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      required={required}
-      disabled={disabled}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-      className={`w-full h-[60px] px-4 py-2 text-[18px] text-[#090446] bg-[#09044633] rounded-[12px] font-poppins
-        focus:outline-none transition
-        ${error ? 'border border-red-500' : isFocused ? 'ring-2 ring-[#09044680]' : ''}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-      {...props}
-      />
+      <div className="relative">
+        <input
+          type={actualType}
+          id={id}
+          name={name}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          required={required}
+          disabled={disabled}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className={`w-full px-4 py-2 text-[18px] text-[#090446] bg-[#09044633] rounded-[12px] font-poppins
+            focus:outline-none transition
+            ${error ? 'border border-red-500' : isFocused ? 'ring-2 ring-[#09044680]' : ''}
+            ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+            ${inputClassName}`}
+          {...props}
+        />
 
-      {toggleVisibility && (
-      <button
-        type="button"
-        onClick={handleToggle}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#090446] text-xl focus:outline-none"
-        tabIndex={-1}
-      >
-        {showPassword ? '🙈' : '👁️'}
-      </button>
-    )}
-  </div>
-  {error && (
-    <p className="mt-1 text-sm text-red-500 font-poppins">
-      {error}
-    </p>
-  )}
-</div>
+        {toggleVisibility && (
+          <button
+            type="button"
+            onClick={handleToggle}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#090446] text-xl focus:outline-none"
+            tabIndex={-1}
+          >
+            {showPassword ? '🙈' : '👁️'}
+          </button>
+        )}
+      </div>
 
+      {error && (
+        <p className="mt-1 text-sm text-red-500 font-poppins">
+          {error}
+        </p>
+      )}
+    </div>
   );
 };
 
@@ -88,7 +90,8 @@ InputField.propTypes = {
   disabled: PropTypes.bool,
   error: PropTypes.string,
   className: PropTypes.string,
-  toggleVisibility: PropTypes.bool, // New!
+  inputClassName: PropTypes.string,
+  toggleVisibility: PropTypes.bool,
 };
 
 export default InputField;

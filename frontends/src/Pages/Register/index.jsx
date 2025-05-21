@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import InputField from '../../components/ui/InputField';
 import Button from '../../components/ui/Button';
-import Header from '../../components/common/Header';
 import { FlickeringGrid } from '../../components/magicui/flickering-grid';
-import { Globe } from '../../components/magicui/globe';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -37,61 +35,59 @@ const RegisterPage = () => {
   };
 
   return (
-  <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#1d2b64] via-[#f8cdda] to-[#1d2b64]">
-    {/* Grid Flicker Background */}
-    <FlickeringGrid
-      squareSize={6}
-      gridGap={6}
-      flickerChance={0.7}
-      colorMode="cyberpunk"
-      maxOpacity={0.55}
-      hueShiftSpeed={100}
-      className="absolute inset-0 z-0"
-    />
+      <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#1d2b64] via-[#f8cdda] to-[#1d2b64]">
+        {/* Grid Flicker Background */}
+        <FlickeringGrid
+          squareSize={6}
+          gridGap={6}
+          flickerChance={0.7}
+          colorMode="cyberpunk"
+          maxOpacity={0.55}
+          hueShiftSpeed={100}
+          className="absolute inset-0 z-0"
+        />
 
-    {/* Overlay Gelap untuk Kontras */}
+        {/* Card */}
+        <div className="flex max-w-3xl w-full min-h-[360px] bg-white/90 rounded-xl shadow-md overflow-hidden z-10 backdrop-blur-md">
+          {/* Sidebar */}
+          <div className="bg-[#002C4B] w-[42%] flex flex-col justify-between items-center text-white px-4 py-4">
+            {/* Arrow */}
+            <div className="w-full flex justify-start">
+              <button onClick={() => navigate(-1)} className="hover:opacity-70 transition">
+                <img src="./public/images/img_arrowleft.svg" alt="Kembali" className="w-6 h-6" />
+              </button>
+            </div>
+            {/* Tengah */}
+            <div className="flex flex-col justify-center items-center flex-grow -mt-4">
+              <img src="./public/images/img_male_1.png" alt="Profile" className="w-[90px] h-[90px] mt-6 mb-4" />
+              <p className="text-lg font-semibold text-center">Pendaftaran Member</p>
+            </div>
+          </div>
 
-    {/* Card */}
-    <div className="flex max-w-3xl w-full min-h-[360px] bg-white/90 rounded-xl shadow-md overflow-hidden z-10 backdrop-blur-md">
-      {/* Sidebar */}
-      <div className="bg-[#002C4B] w-[42%] flex flex-col justify-between items-center text-white px-4 py-4">
-        {/* Arrow */}
-        <div className="w-full flex justify-start">
-          <button onClick={() => navigate(-1)} className="hover:opacity-70 transition">
-            <img src="./public/images/img_arrowleft.svg" alt="Kembali" className="w-6 h-6" />
-          </button>
-        </div>
-        {/* Tengah */}
-        <div className="flex flex-col justify-center items-center flex-grow -mt-4">
-          <img src="./public/images/img_male_1.png" alt="Profile" className="w-[90px] h-[90px] mt-6 mb-4" />
-          <p className="text-lg font-semibold text-center">Pendaftaran Member</p>
+          {/* Form */}
+          <div className="w-[58%] bg-white p-4 flex flex-col justify-center items-center">
+            <h1 className="text-xl font-bold text-[#090446] mb-1 text-center">Register Account</h1>
+            <p className="text-sm text-[#090446] mb-2 text-center">Pendaftaran Member</p>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-2 items-center mt-1 w-full">
+              <InputField label="Nama Lengkap" id="fullName" name="fullName" value={formData.fullName} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
+              <InputField label="NIM" id="nim" name="nim" value={formData.nim} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
+              <InputField label="Email" type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
+              <InputField label="Password" type="password" id="password" name="password" value={formData.password} onChange={handleChange} required toggleVisibility className="w-full max-w-xs" inputClassName="h-8 text-sm" />
+              <InputField label="Jurusan" id="jurusan" name="jurusan" value={formData.jurusan} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
+              <InputField label="Fakultas" id="fakultas" name="fakultas" value={formData.fakultas} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
+              <Button
+                type="submit"
+                size="large"
+                variant="primary"
+                className="w-full max-w-xs bg-red-600 text-white mt-2 text-sm hover:bg-red-700 transition transform hover:scale-105"
+              >
+                Sign up
+              </Button>
+            </form>
+          </div>
         </div>
       </div>
-
-      {/* Form */}
-      <div className="w-[58%] bg-white p-4 flex flex-col justify-center items-center">
-        <h1 className="text-xl font-bold text-[#090446] mb-1 text-center">Register Account</h1>
-        <p className="text-sm text-[#090446] mb-2 text-center">Pendaftaran Member</p>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-2 items-center mt-1 w-full">
-          <InputField label="Nama Lengkap" id="fullName" name="fullName" value={formData.fullName} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
-          <InputField label="NIM" id="nim" name="nim" value={formData.nim} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
-          <InputField label="Email" type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
-          <InputField label="Password" type="password" id="password" name="password" value={formData.password} onChange={handleChange} required toggleVisibility className="w-full max-w-xs" inputClassName="h-8 text-sm" />
-          <InputField label="Jurusan" id="jurusan" name="jurusan" value={formData.jurusan} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
-          <InputField label="Fakultas" id="fakultas" name="fakultas" value={formData.fakultas} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
-          <Button
-            type="submit"
-            size="large"
-            variant="primary"
-            className="w-full max-w-xs bg-red-600 text-white mt-2 text-sm hover:bg-red-700 transition transform hover:scale-105"
-          >
-            Sign up
-          </Button>
-        </form>
-      </div>
-    </div>
-  </div>
-);
+  );
 };
 
 export default RegisterPage;

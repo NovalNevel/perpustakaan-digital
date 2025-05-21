@@ -9,36 +9,24 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="h-full w-full bg-[#012E4A] flex flex-col justify-between py-10 px-10 font-poppins">
-      
-      {/* Bagian atas: tombol kembali dan avatar */}
-      <div className="relative flex flex-col items-center">
-        {/* Tombol back */}
-        <button
-          onClick={handleBackClick}
-          className="absolute top-0 left-0 text-white hover:text-gray-300"
-          aria-label="Go back"
-        >
-          <img src="./public/images/img_arrowleft.svg" alt="Back" className="w-7 h-7" />
-        </button>
-
-        {/* Gambar profil */}
-        <img
-          src="./public/images/img_male_1.png"
-          alt="Profile"
-          className="w-[160px] h-[160px] mt-12 mb-6"
-        />
+    <div className="h-full w-full bg-[#002C4B] flex flex-col justify-between items-center text-white px-4 py-6">
+      {/* Atas: Arrow & Foto */}
+      <div className="w-full flex flex-col items-center">
+        <div className="w-full flex justify-start mb-4">
+          <button onClick={handleBackClick} className="hover:opacity-70 transition">
+            <img src="./public/images/img_arrowleft.svg" alt="Kembali" className="w-6 h-6" />
+          </button>
+        </div>
+        <img src="./public/images/img_male_1.png" alt="Profile" className="w-[90px] h-[90px] mb-4" />
       </div>
-
-      {/* Bagian bawah: teks & tombol */}
-      <div className="flex flex-col items-center mb-6">
-        <h2 className="text-[24px] font-semibold text-white text-center mb-6">
+      {/* Bawah: Text & Button */}
+      <div className="flex flex-col items-center mb-2">
+        <h2 className="text-[20px] font-semibold text-white text-center mb-4">
           Belum Punya Akun?
         </h2>
-
         <button
           onClick={() => navigate('/register')}
-          className="w-[450px] h-[80px] bg-[#FF002E] text-white text-[28px] font-semibold rounded-md shadow-md border-4 border-white underline hover:bg-red-700 transition"
+          className="w-[180px] h-[40px] bg-[#FF002E] text-white text-base font-semibold rounded-md shadow-md border-4 border-white underline hover:bg-red-700 transition"
         >
           Sign up
         </button>

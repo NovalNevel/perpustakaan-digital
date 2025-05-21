@@ -14,7 +14,7 @@ const Button = ({
   const baseClasses = 'font-poppins font-semibold rounded transition-colors duration-200 focus:outline-none';
 
   const variants = {
-    primary: 'bg-[#FF002E] text-white hover:bg-[#e60029] border-[4px] border-white shadow-md',
+    primary: 'bg-[#FF002E] text-white hover:bg-[#e60029] border-[4px]',
     secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300 disabled:bg-gray-100',
     outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:border-gray-200 disabled:text-gray-400',
   };
