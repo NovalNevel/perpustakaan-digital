@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import auth_routes from "./routes/auth_routes";
-import bookRoutes from './routes/book_routes';
+import book_routes from './routes/book_routes';
 
 
 dotenv.config();
@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use("/api/auth", auth_routes);
 
-app.use('/api/books', bookRoutes);
+app.use('/api/books', book_routes);
 
 
 const PORT = process.env.PORT;
