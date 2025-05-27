@@ -8,47 +8,55 @@ datasource db {
 }
 
 model User {
-  id           Int         @id @default(autoincrement())
-  username     String      @unique
-  email        String      @unique
+  id           Int        @id @default(autoincrement())
+  username     String     @unique
+  email        String     @unique
   password     String
   faculty      String
   studyProgram String
-  nim          String      @unique
-  createdAt    DateTime    @default(now())
-  loans        BookLoan[]  // relasi ke peminjaman
-}
-
-model Admin {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  nim          String     @unique
+  role         Role       @default(USER)
+  createdAt    DateTime   @default(now())
+  loans        BookLoan[]
 }
 
 model Book {
-  id        String     @id
-  title     String
-  author    String
-  shelf     String
-  available Boolean    @default(true)
-  createdAt DateTime   @default(now())
-  loans     BookLoan[] // relasi ke peminjaman
+  id         String     @id @default(uuid())
+  title      String
+  author     String
+  shelf      String
+  location   String
+  available  Boolean    @default(true)
+  imageUrl   String? // untuk upload gambar
+  createdAt  DateTime   @default(now())
+  categoryId Int?
+  category   Category?  @relation(fields: [categoryId], references: [id])
+  loans      BookLoan[]
 }
 
 model BookLoan {
-  id           Int       @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   borrowedDate DateTime
   dueDate      DateTime
-  returnedDate DateTime? // null = belum dikembalikan
+  returnedDate DateTime?
   status       LoanStatus @default(BORROWED)
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
   userId Int
 
   book   Book   @relation(fields: [bookId], references: [id])
   bookId String
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  books Book[]
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 enum LoanStatus {

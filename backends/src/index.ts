@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-
 import auth_routes from "./routes/auth_routes";
+import bookRoutes from './routes/book_routes';
 
 
 dotenv.config();
@@ -11,6 +11,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", auth_routes);
+
+app.use('/api/books', bookRoutes);
+
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
