@@ -7,7 +7,7 @@ const jwtSecret = process.env.Access_Token || "your_secret";
 
 // Register user baru
 export const register = async (req: Request, res: Response) => {
-    const { username, email, password, faculty, studyProgram, nim } = req.body;
+    const {  username, email, password, faculty, studyProgram, nim, role = 'USER' } = req.body;
 
     try {
         const existingUser = await prisma.user.findFirst({
@@ -25,9 +25,10 @@ export const register = async (req: Request, res: Response) => {
                 username,
                 email,
                 password: hashedPassword,
-                studyProgam: faculty,
+                faculty,
                 studyProgram,
                 nim,
+                role,
             },
         });
 
@@ -36,7 +37,11 @@ export const register = async (req: Request, res: Response) => {
             user: {
                 id: user.id,
                 username: user.username,
-                email: user.email
+                email: user.email,
+                faculty: user.faculty,
+                studyProgram: user.studyProgram,
+                nim: user.nim,
+                role: user.role,
             }
         });
     } catch (error) {
@@ -77,9 +82,10 @@ export const login = async (req: Request, res: Response) => {
                 id: user.id,
                 username: user.username,
                 email: user.email,
-                nim: user.nim,
+                faculty: user.faculty,
                 studyProgram: user.studyProgram,
-                faculty: user.studyProgam,
+                nim: user.nim,
+                role: user.role,
             }
         });
     } catch (error) {
