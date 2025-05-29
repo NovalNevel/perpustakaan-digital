@@ -3,9 +3,13 @@ import { register, login, refreshToken, logout } from "../controllers/auth_contr
 
 const router = express.Router();
 
+// @ts-ignore
 router.post("/register", register);
+// @ts-ignore
 router.post("/login", login);
+// @ts-ignore
 router.post("/refresh", refreshToken);
+// @ts-ignore
 router.post("/logout", logout);
 
 export default router;

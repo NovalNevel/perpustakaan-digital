@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { prisma } from "../prisma";
 
-const jwtSecret = process.env.Access_Token || "your_secret";
+const jwtSecret = process.env.JWT_SECRET || "your_secret";
 
 // Register user baru
 export const register = async (req: Request, res: Response) => {
