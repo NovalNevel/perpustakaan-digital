@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
+const JWT_SECRET = process.env.Access_Token || 'your_secret';
 
 export interface AuthRequest extends Request {
     user?: any;
@@ -9,6 +9,7 @@ export interface AuthRequest extends Request {
 
 export function verifyToken(req: AuthRequest, res: Response, next: NextFunction): void {
     const token = req.headers.authorization?.split(' ')[1];
+
     if (!token) {
         res.status(401).json({ message: 'Token tidak ditemukan' });
         return;
@@ -31,3 +32,4 @@ export function isAdmin(req: AuthRequest, res: Response, next: NextFunction): vo
     }
     return next();
 }
+

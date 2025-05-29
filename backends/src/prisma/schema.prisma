@@ -8,16 +8,25 @@ datasource db {
 }
 
 model User {
-  id           Int        @id @default(autoincrement())
-  username     String     @unique
-  email        String     @unique
+  id           Int            @id @default(autoincrement())
+  username     String         @unique
+  email        String         @unique
   password     String
   faculty      String
   studyProgram String
-  nim          String     @unique
-  role         Role       @default(USER)
-  createdAt    DateTime   @default(now())
+  nim          String         @unique
+  role         Role           @default(USER)
+  createdAt    DateTime       @default(now())
   loans        BookLoan[]
+  RefreshToken RefreshToken[]
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Book {

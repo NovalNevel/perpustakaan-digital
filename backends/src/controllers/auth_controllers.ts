@@ -5,7 +5,6 @@ import { prisma } from "../prisma";
 
 const jwtSecret = process.env.Access_Token || "your_secret";
 
-
 // Register user baru
 export const register = async (req: Request, res: Response) => {
     const { username, email, password, faculty, studyProgram, nim } = req.body;
@@ -26,13 +25,20 @@ export const register = async (req: Request, res: Response) => {
                 username,
                 email,
                 password: hashedPassword,
-                faculty,
+                studyProgam: faculty,
                 studyProgram,
                 nim,
             },
         });
 
-        res.status(201).json({ message: "User registered successfully", user: { id: user.id, username: user.username, email: user.email } });
+        res.status(201).json({
+            message: "User registered successfully",
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email
+            }
+        });
     } catch (error) {
         res.status(500).json({ message: "Registration failed", error });
     }
@@ -41,23 +47,78 @@ export const register = async (req: Request, res: Response) => {
 // Login
 export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
-
     try {
         const user = await prisma.user.findUnique({ where: { email } });
-
-        if (!user) return res.status(404).json({ message: "User not found" });
-
+        if (!user) return res.status(404).json({ message: "User  not found" });
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) return res.status(401).json({ message: "Invalid password" });
-
-        const token = jwt.sign(
-            { userId: user.id, username: user.username, role: user.role},
+        const accessToken = jwt.sign(
+            { userId: user.id, username: user.username },
             jwtSecret,
-            { expiresIn: "1d" }
+            { expiresIn: "15m" }
         );
-
-        res.json({ token, user: { id: user.id, username: user.username, email: user.email } });
+        const refreshToken = jwt.sign(
+            { userId: user.id, username: user.username },
+            jwtSecret,
+            { expiresIn: "2h" }
+        );
+        await prisma.refreshToken.create({
+            data: {
+                userId: user.id,
+                token: refreshToken,
+                expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000) // 2 jam
+            }
+        });
+        res.json({
+            message: "Login successful",
+            accessToken,
+            refreshToken,
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                nim: user.nim,
+                studyProgram: user.studyProgram,
+                faculty: user.studyProgam,
+            }
+        });
     } catch (error) {
         res.status(500).json({ message: "Login failed", error });
+    }
+};
+
+// Refresh Token
+export const refreshToken = async (req: Request, res: Response) => {
+    const { token } = req.body;
+    if (!token) return res.status(401).json({ message: "Token tidak ditemukan" });
+    try {
+        const storedToken = await prisma.refreshToken.findUnique({ where: { token } });
+        if (!storedToken || new Date() > storedToken.expiresAt) {
+            return res.status(403).json({ message: "Token tidak valid atau sudah kadaluarsa" });
+        }
+        const accessToken = jwt.sign(
+            { userId: storedToken.userId },
+            jwtSecret,
+            { expiresIn: "15m" }
+        );
+        res.json({ accessToken });
+    } catch (error) {
+        res.status(500).json({ message: "Refresh token gagal", error });
+    }
+};
+
+// Logout
+export const logout = async (req: Request, res: Response) => {
+    const { token } = req.body;
+    if (!token) {
+        return res.status(400).json({ message: "Token tidak ditemukan" });
+    }
+    try {
+        await prisma.refreshToken.deleteMany({
+            where: { token }
+        });
+        res.json({ message: "Logout berhasil" });
+    } catch (error) {
+        res.status(500).json({ message: "Logout gagal", error });
     }
 };
