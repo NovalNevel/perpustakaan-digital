@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import InputField from '../components/ui/InputField';
 import Button from '../components/ui/Button';
-// import { FlickeringGrid } from '../../components/magicui/flickering-grid';
-// import auth from '../../services/auth'; // Comment auth
+import auth from '../services/auth';
 import { toast } from 'react-toastify';
 
 const LoginPage = () => {
@@ -11,7 +10,7 @@ const LoginPage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
-  // const { login } = auth(); // Comment auth
+  const { login } = auth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,19 +44,13 @@ const LoginPage = () => {
     e.preventDefault();
     if (!validateForm()) return;
 
+    const res = await login(formData.email, formData.password);
+    if (res.status && res.status !== 200) {
+      toast.error(res.message || 'Login gagal');
+      return;
+    }
+
     toast.success('Login successful!');
-
-    const username = formData.email.split('@')[0]; // ambil nama sebelum '@'
-
-    localStorage.setItem('isLoggedIn', 'true');
-    localStorage.setItem(
-      'user',
-      JSON.stringify({
-        name: username,
-        email: formData.email,
-      })
-    );
-
     navigate('/dashboard');
   };
 

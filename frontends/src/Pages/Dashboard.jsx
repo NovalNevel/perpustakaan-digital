@@ -62,9 +62,9 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loginStatus = localStorage.getItem('isLoggedIn') === 'true';
-    setIsLoggedIn(loginStatus);
-    setLoading(false); // selesai cek login
+    const token = sessionStorage.getItem('accessToken');
+    setIsLoggedIn(!!token);
+    setLoading(false);
   }, []);
 
   return (

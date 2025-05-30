@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import auth from '../services/auth';
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState({ name: '', email: '', nim: '' });
+  const {logout} = auth();
+  const [user, setUser] = useState({ username: '', email: '', nim: '' });
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
+    const userData = sessionStorage.getItem('user');
     if (!userData) {
       toast.error('Belum login');
       navigate('/login');
@@ -15,15 +17,24 @@ const Profile = () => {
     }
 
     const parsedUser = JSON.parse(userData);
-    const nim = parsedUser.email.split('@')[0];
-    setUser({ ...parsedUser, nim });
+    setUser({
+      username: parsedUser.username,
+      email: parsedUser.email,
+      nim: parsedUser.nim,
+    });
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('user');
-    toast.info('Logged out!');
-    navigate('/dashboard');
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.info('Logged out!');
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Logout error:', error);
+
+      sessionStorage.clear();
+      navigate('/dashboard');
+    }
   };
 
   const borrowedBooks = [
@@ -66,8 +77,8 @@ const Profile = () => {
               alt="Profil"
               className="w-28 h-28 rounded-full object-cover shadow-md"
             />
-            <h2 className="mt-4 text-lg font-bold text-white">{user.name}</h2>
-            <p className="text-sm text-blue-100">{user.nim}</p>
+            <h2 className="mt-4 text-lg font-bold text-white">{user.username}</h2>
+            <p className="text-sm text-blue-100">{user.email}</p>
           </div>
           {/* Bagian Bawah: Status Peminjaman */}
           <div className="bg-white p-8">

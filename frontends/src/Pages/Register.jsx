@@ -3,17 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import InputField from '../components/ui/InputField';
 import Button from '../components/ui/Button';
-import { FlickeringGrid } from '../components/magicui/flickering-grid';
+import auth from "@/services/auth.jsx";
 
 const RegisterPage = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const { register } = auth();
   const [formData, setFormData] = useState({
-    fullName: '',
-    nim: '',
+    username: '',
     email: '',
     password: '',
-    jurusan: '',
-    fakultas: '',
+    studyProgam: '',
+    faculty: '',
+    nim: '',
   });
 
   const handleChange = (e) => {
@@ -21,8 +22,20 @@ const RegisterPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const res = await register(
+        formData.username,
+        formData.email,
+        formData.password,
+        formData.faculty,
+        formData.studyProgam,
+        formData.nim
+    );
+    if (res.status && res.status !== 200) {
+      toast.error(res.message || 'Registrasi gagal');
+      return;
+    }
     toast.success('Registrasi berhasil!', {
       position: 'top-right',
       autoClose: 3000,
@@ -58,12 +71,12 @@ const RegisterPage = () => {
             <h1 className="text-xl font-bold text-[#090446] mb-1 text-center">Register Account</h1>
             <p className="text-sm text-[#090446] mb-2 text-center">Pendaftaran Member</p>
             <form onSubmit={handleSubmit} className="flex flex-col gap-2 items-center mt-1 w-full">
-              <InputField label="Nama Lengkap" id="fullName" name="fullName" value={formData.fullName} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
+              <InputField label="Nama Lengkap" id="fullName" name="fullName" value={formData.username} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
               <InputField label="NIM" id="nim" name="nim" value={formData.nim} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
               <InputField label="Email" type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
               <InputField label="Password" type="password" id="password" name="password" value={formData.password} onChange={handleChange} required toggleVisibility className="w-full max-w-xs" inputClassName="h-8 text-sm" />
-              <InputField label="Jurusan" id="jurusan" name="jurusan" value={formData.jurusan} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
-              <InputField label="Fakultas" id="fakultas" name="fakultas" value={formData.fakultas} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
+              <InputField label="Jurusan" id="jurusan" name="jurusan" value={formData.studyProgam} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
+              <InputField label="Fakultas" id="fakultas" name="fakultas" value={formData.faculty} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
               <Button
                 type="submit"
                 size="large"
