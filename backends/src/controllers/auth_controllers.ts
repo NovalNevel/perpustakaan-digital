@@ -13,13 +13,10 @@ export const register = async (req: Request, res: Response) => {
         const existingUser = await prisma.user.findFirst({
             where: { OR: [{ email }, { username }, { nim }] },
         });
-
         if (existingUser) {
             return res.status(400).json({ message: "User already exists" });
         }
-
         const hashedPassword = await bcrypt.hash(password, 10);
-
         const user = await prisma.user.create({
             data: {
                 username,
@@ -31,7 +28,6 @@ export const register = async (req: Request, res: Response) => {
                 role,
             },
         });
-
         res.status(201).json({
             message: "User registered successfully",
             user: {
@@ -52,26 +48,27 @@ export const register = async (req: Request, res: Response) => {
 // Login
 export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
+
     try {
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) return res.status(404).json({ message: "User  not found" });
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) return res.status(401).json({ message: "Invalid password" });
         const accessToken = jwt.sign(
-            { userId: user.id, username: user.username },
+            { userId: user.id, username: user.username, role: user.role },
             jwtSecret,
             { expiresIn: "15m" }
         );
         const refreshToken = jwt.sign(
-            { userId: user.id, username: user.username },
+            { userId: user.id, username: user.username, role: user.role },
             jwtSecret,
-            { expiresIn: "2h" }
+            { expiresIn: "30m" }
         );
         await prisma.refreshToken.create({
             data: {
                 userId: user.id,
                 token: refreshToken,
-                expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000) // 2 jam
+                expiresAt: new Date(Date.now() + 30 * 60 * 1000) // 30 menit
             }
         });
         res.json({
@@ -96,14 +93,28 @@ export const login = async (req: Request, res: Response) => {
 // Refresh Token
 export const refreshToken = async (req: Request, res: Response) => {
     const { token } = req.body;
+
     if (!token) return res.status(401).json({ message: "Token tidak ditemukan" });
+
     try {
         const storedToken = await prisma.refreshToken.findUnique({ where: { token } });
         if (!storedToken || new Date() > storedToken.expiresAt) {
             return res.status(403).json({ message: "Token tidak valid atau sudah kadaluarsa" });
         }
+
+        const user = await prisma.user.findUnique({
+            where: { id: storedToken.userId }
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "User tidak ditemukan" });
+        }
         const accessToken = jwt.sign(
-            { userId: storedToken.userId },
+            {
+                userId: user.id,
+                username: user.username,
+                role: user.role
+            },
             jwtSecret,
             { expiresIn: "15m" }
         );
@@ -116,6 +127,7 @@ export const refreshToken = async (req: Request, res: Response) => {
 // Logout
 export const logout = async (req: Request, res: Response) => {
     const { token } = req.body;
+
     if (!token) {
         return res.status(400).json({ message: "Token tidak ditemukan" });
     }
@@ -126,5 +138,26 @@ export const logout = async (req: Request, res: Response) => {
         res.json({ message: "Logout berhasil" });
     } catch (error) {
         res.status(500).json({ message: "Logout gagal", error });
+    }
+};
+
+// Ambil data users
+export const getUsers = async (req: Request, res: Response) => {
+    try {
+        const users = await prisma.user.findMany({
+            select: {
+                id: true,
+                username: true,
+                email: true,
+                faculty: true,
+                studyProgram: true,
+                nim: true,
+                role: true,
+                createdAt: true
+            }
+        });
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to fetch users", error });
     }
 };

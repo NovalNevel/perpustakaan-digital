@@ -4,7 +4,11 @@ import jwt from 'jsonwebtoken';
 const jwtSecret = process.env.JWT_SECRET || 'your_secret';
 
 export interface AuthRequest extends Request {
-    user?: any;
+    user?: {
+        userId: string;
+        username: string;
+        role: string;
+    };
 }
 
 export function verifyToken(req: AuthRequest, res: Response, next: NextFunction): void {
@@ -14,9 +18,8 @@ export function verifyToken(req: AuthRequest, res: Response, next: NextFunction)
         res.status(401).json({ message: 'Token tidak ditemukan' });
         return;
     }
-
     try {
-        const decoded = jwt.verify(token, jwtSecret);
+        const decoded = jwt.verify(token, jwtSecret) as any;
         req.user = decoded;
         return next();
     } catch (err) {
@@ -26,7 +29,12 @@ export function verifyToken(req: AuthRequest, res: Response, next: NextFunction)
 }
 
 export function isAdmin(req: AuthRequest, res: Response, next: NextFunction): void {
-    if (req.user?.role !== 'ADMIN') {
+    if (!req.user) {
+        res.status(401).json({ message: 'User tidak terautentikasi' });
+        return;
+    }
+
+    if (req.user.role !== 'ADMIN') {
         res.status(403).json({ message: 'Hanya admin yang diizinkan' });
         return;
     }
