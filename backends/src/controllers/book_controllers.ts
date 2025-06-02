@@ -77,7 +77,7 @@ export const createBook = async (req: Request, res: Response) => {
 
 export const updateBook = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { title, author, publisher, publicationYear, isbn, language, shelf, location, categoryName } = req.body;
+    const { title, author, publisher, publicationYear, isbn, pages, language, shelf, location, categoryName } = req.body;
     const imageUrl = req.file?.path;
 
     try {
@@ -101,6 +101,7 @@ export const updateBook = async (req: Request, res: Response) => {
                 publisher,
                 publicationYear,
                 isbn,
+                pages: parseInt(pages, 10),
                 language,
                 shelf,
                 location,
