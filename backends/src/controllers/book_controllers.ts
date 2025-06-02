@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../prisma';
 
+// Mendapatkan daftar buku
 export const getBooks = async (_req: Request, res: Response) => {
     try {
         const books = await prisma.book.findMany({
@@ -9,12 +10,30 @@ export const getBooks = async (_req: Request, res: Response) => {
         res.json(books);
     } catch (error) {
         console.error('Error fetching books:', error);
-        res.status(500).json({ message: 'Error fetching books' });
+        res.status(500).json({ message: 'Gagal mengambil daftar buku', error: error });
+    }
+};
+
+export const getBookById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+        const book = await prisma.book.findUnique({
+            where: { id },
+            include: { category: true }
+        });
+        if (!book) {
+            return res.status(404).json({ message: "Buku tidak ditemukan" });
+        }
+        res.json(book);
+    } catch (error) {
+        console.error('Error fetching book by ID:', error);
+        res.status(500).json({ message: "Gagal mengambil detail buku", error: error });
     }
 };
 
 export const createBook = async (req: Request, res: Response) => {
-    const { title, author, shelf, categoryName, location } = req.body;
+    const { title, author, publisher, publicationYear, isbn, pages, language, shelf, location, categoryName } = req.body;
     const imageUrl = req.file?.path;
 
     try {
@@ -35,6 +54,11 @@ export const createBook = async (req: Request, res: Response) => {
             data: {
                 title,
                 author,
+                publisher,
+                publicationYear,
+                isbn,
+                pages,
+                language,
                 shelf,
                 location,
                 categoryId,
@@ -53,7 +77,7 @@ export const createBook = async (req: Request, res: Response) => {
 
 export const updateBook = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { title, author, shelf, categoryName, location } = req.body;
+    const { title, author, publisher, publicationYear, isbn, language, shelf, location, categoryName } = req.body;
     const imageUrl = req.file?.path;
 
     try {
@@ -74,6 +98,10 @@ export const updateBook = async (req: Request, res: Response) => {
             data: {
                 title,
                 author,
+                publisher,
+                publicationYear,
+                isbn,
+                language,
                 shelf,
                 location,
                 categoryId,
