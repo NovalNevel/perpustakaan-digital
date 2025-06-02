@@ -7,7 +7,7 @@ import {borrowBook, getUserLoans, returnBook} from "../controllers/loan_controll
 const router = express.Router();
 
 router.get('/', getBooks);
-
+router.get('/categories', getCategories);
 router.get('/:id', async (req, res) => {
     await getBookById(req, res);
 });
@@ -15,7 +15,6 @@ router.get('/:id', async (req, res) => {
 router.post('/', verifyToken, isAdmin, upload.single('image'), createBook);
 router.put('/:id', verifyToken, isAdmin, upload.single('image'), updateBook);
 router.delete('/:id', verifyToken, isAdmin, deleteBook);
-router.get('/categories', getCategories);
 router.post('/borrow', verifyToken, isAdmin, borrowBook);
 router.post('/return', verifyToken, isAdmin, returnBook);
 router.get('/my-loans', verifyToken, getUserLoans);
