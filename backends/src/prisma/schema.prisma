@@ -12,9 +12,9 @@ model User {
   username     String         @unique
   email        String         @unique
   password     String
+  nim          String         @unique
   faculty      String
   studyProgram String
-  nim          String         @unique
   role         Role           @default(USER)
   createdAt    DateTime       @default(now())
   loans        BookLoan[]
@@ -30,17 +30,22 @@ model RefreshToken {
 }
 
 model Book {
-  id         String     @id @default(uuid())
-  title      String
-  author     String
-  shelf      String
-  location   String
-  available  Boolean    @default(true)
-  imageUrl   String? // untuk upload gambar
-  createdAt  DateTime   @default(now())
-  categoryId Int?
-  category   Category?  @relation(fields: [categoryId], references: [id])
-  loans      BookLoan[]
+  id              String     @id @default(uuid())
+  title           String
+  author          String
+  publisher       String
+  publicationYear String
+  isbn            String     @unique
+  pages           Int
+  language        String
+  shelf           String
+  location        String
+  available       Boolean    @default(true)
+  imageUrl        String? // untuk upload gambar
+  createdAt       DateTime   @default(now())
+  categoryId      Int?
+  category        Category?  @relation(fields: [categoryId], references: [id])
+  loans           BookLoan[]
 }
 
 model BookLoan {
