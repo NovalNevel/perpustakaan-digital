@@ -57,7 +57,7 @@ export const createBook = async (req: Request, res: Response) => {
                 publisher,
                 publicationYear,
                 isbn,
-                pages,
+                pages: parseInt(pages, 10),
                 language,
                 shelf,
                 location,
