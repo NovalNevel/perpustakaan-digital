@@ -7,7 +7,7 @@ const jwtSecret = process.env.JWT_SECRET || "your_secret";
 
 // Register user baru
 export const register = async (req: Request, res: Response) => {
-    const {  username, email, password, faculty, studyProgram, nim, role = 'USER' } = req.body;
+    const {  username, email, password, nim, faculty, studyProgram, role = 'USER' } = req.body;
 
     try {
         const existingUser = await prisma.user.findFirst({
@@ -22,9 +22,9 @@ export const register = async (req: Request, res: Response) => {
                 username,
                 email,
                 password: hashedPassword,
+                nim,
                 faculty,
                 studyProgram,
-                nim,
                 role,
             },
         });
@@ -34,9 +34,9 @@ export const register = async (req: Request, res: Response) => {
                 id: user.id,
                 username: user.username,
                 email: user.email,
+                nim: user.nim,
                 faculty: user.faculty,
                 studyProgram: user.studyProgram,
-                nim: user.nim,
                 role: user.role,
             }
         });
@@ -51,7 +51,7 @@ export const login = async (req: Request, res: Response) => {
 
     try {
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return res.status(404).json({ message: "User  not found" });
+        if (!user) return res.status(404).json({ message: "Useraaa not found" });
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) return res.status(401).json({ message: "Invalid password" });
         const accessToken = jwt.sign(
@@ -79,9 +79,9 @@ export const login = async (req: Request, res: Response) => {
                 id: user.id,
                 username: user.username,
                 email: user.email,
+                nim: user.nim,
                 faculty: user.faculty,
                 studyProgram: user.studyProgram,
-                nim: user.nim,
                 role: user.role,
             }
         });
@@ -158,6 +158,6 @@ export const getUsers = async (req: Request, res: Response) => {
         });
         res.json(users);
     } catch (error) {
-        res.status(500).json({ message: "Failed to fetch users", error });
+        res.status(500).json({ message: "Gagal mengambil data users", error });
     }
 };
