@@ -5,7 +5,8 @@ import { prisma } from '../prisma';
 export const getBooks = async (_req: Request, res: Response) => {
     try {
         const books = await prisma.book.findMany({
-            include: { category: true }
+            include: { category: true },
+            orderBy: { id: 'asc' }
         });
         res.json(books);
     } catch (error) {
@@ -134,7 +135,7 @@ export const deleteBook = async (req: Request, res: Response) => {
 export const getCategories = async (_req: Request, res: Response) => {
     try {
         const categories = await prisma.category.findMany({
-            orderBy: { name: 'asc' }
+            orderBy: { id : 'asc' },
         });
         res.json(categories);
     } catch (error) {

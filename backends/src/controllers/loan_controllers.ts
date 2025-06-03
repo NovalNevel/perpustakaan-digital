@@ -29,6 +29,7 @@ export const borrowBook = async (req: Request, res: Response): Promise<void> => 
         const loan = await prisma.bookLoan.create({
             data: {
                 borrowedDate: new Date(),
+                returnedDate: null,
                 dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Tenggat dalam waktu 7 hari
                 userId: parseInt(userId, 10),
                 bookId,

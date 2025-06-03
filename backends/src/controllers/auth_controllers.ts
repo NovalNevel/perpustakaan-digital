@@ -154,7 +154,8 @@ export const getUsers = async (req: Request, res: Response) => {
                 nim: true,
                 role: true,
                 createdAt: true
-            }
+            },
+            orderBy: { id: 'asc' },
         });
         res.json(users);
     } catch (error) {
