@@ -6,6 +6,7 @@ import RegisterPage from './Pages/Register';
 import Dashboard from './Pages/Dashboard';
 import Profile from './Pages/Profile';
 import BookDetail from './Pages/DetailBook';
+import DetailList from './Pages/DetailList';
 
 const AppRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const AppRoutes = () => {
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/Profile" element={<Profile />} />
         <Route path="/book/:id" element={<BookDetail />} />
+        <Route path="/category/:category" element={<DetailList />} />
         <Route path="/" element={<Dashboard />} /> {/* Default route redirects to dashboard */}
       </Routes>
     </Router>

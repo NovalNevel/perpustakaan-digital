@@ -1,7 +1,7 @@
 import React from 'react';
 import Routes from './Routes';
-import { ToastContainer } from 'react-toastify'; // ✅ Tambahkan ini
-import 'react-toastify/dist/ReactToastify.css';  // ✅ Tambahkan ini juga (styling)
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
