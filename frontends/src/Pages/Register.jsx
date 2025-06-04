@@ -12,7 +12,7 @@ const RegisterPage = () => {
     username: '',
     email: '',
     password: '',
-    studyProgam: '',
+    studyProgram: '',
     faculty: '',
     nim: '',
   });
@@ -29,7 +29,7 @@ const RegisterPage = () => {
         formData.email,
         formData.password,
         formData.faculty,
-        formData.studyProgam,
+        formData.studyProgram,
         formData.nim
     );
     if (res.status && res.status !== 200) {
@@ -71,12 +71,12 @@ const RegisterPage = () => {
             <h1 className="text-xl font-bold text-[#090446] mb-1 text-center">Register Account</h1>
             <p className="text-sm text-[#090446] mb-2 text-center">Pendaftaran Member</p>
             <form onSubmit={handleSubmit} className="flex flex-col gap-2 items-center mt-1 w-full">
-              <InputField label="Nama Lengkap" id="fullName" name="fullName" value={formData.username} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
+              <InputField label="Nama Lengkap" id="username" name="username" value={formData.username} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
               <InputField label="NIM" id="nim" name="nim" value={formData.nim} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
               <InputField label="Email" type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
               <InputField label="Password" type="password" id="password" name="password" value={formData.password} onChange={handleChange} required toggleVisibility className="w-full max-w-xs" inputClassName="h-8 text-sm" />
-              <InputField label="Jurusan" id="jurusan" name="jurusan" value={formData.studyProgam} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
-              <InputField label="Fakultas" id="fakultas" name="fakultas" value={formData.faculty} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
+              <InputField label="Jurusan" id="studyProgram" name="studyProgram" value={formData.studyProgram} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
+              <InputField label="Fakultas" id="faculty" name="faculty" value={formData.faculty} onChange={handleChange} required className="w-full max-w-xs" inputClassName="h-8 text-sm" />
               <Button
                 type="submit"
                 size="large"
