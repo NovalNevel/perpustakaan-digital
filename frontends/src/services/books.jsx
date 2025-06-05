@@ -7,7 +7,7 @@ class BooksService {
     const token = sessionStorage.getItem('accessToken');
     return {
       'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` })
+      ...(token && { Authorization: `Bearer ${token}` }),
     };
   }
 
@@ -16,22 +16,22 @@ class BooksService {
     if (!response.ok) {
       const errorText = await response.text();
       let errorMessage;
-      
+
       try {
         const errorData = JSON.parse(errorText);
         errorMessage = errorData.message || `HTTP error! status: ${response.status}`;
       } catch {
         errorMessage = `HTTP error! status: ${response.status}`;
       }
-      
+
       throw new Error(errorMessage);
     }
-    
+
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
       return await response.json();
     }
-    
+
     return await response.text();
   }
 
@@ -39,7 +39,7 @@ class BooksService {
   static async getAllBooks() {
     try {
       const response = await fetch(`${API_BASE_URL}/books`, {
-        headers: this.getAuthHeaders()
+        headers: this.getAuthHeaders(),
       });
       return await this.handleApiResponse(response);
     } catch (error) {
@@ -52,7 +52,7 @@ class BooksService {
   static async getBookById(id) {
     try {
       const response = await fetch(`${API_BASE_URL}/books/${id}`, {
-        headers: this.getAuthHeaders()
+        headers: this.getAuthHeaders(),
       });
       return await this.handleApiResponse(response);
     } catch (error) {
@@ -72,13 +72,13 @@ class BooksService {
 
       const response = await fetch(`${API_BASE_URL}/books/my-loans`, {
         method: 'GET',
-        headers: this.getAuthHeaders()
+        headers: this.getAuthHeaders(),
       });
 
       return await this.handleApiResponse(response);
     } catch (error) {
       console.error('Error fetching my loans:', error);
-      
+
       // Handle specific error cases
       if (error.message.includes('401')) {
         throw new Error('Sesi Anda telah berakhir. Silakan login kembali.');
@@ -86,10 +86,13 @@ class BooksService {
         throw new Error('Anda tidak memiliki akses untuk melihat data peminjaman.');
       } else if (error.message.includes('404')) {
         throw new Error('Endpoint tidak ditemukan. Periksa konfigurasi API.');
-      } else if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
+      } else if (
+        error.message.includes('NetworkError') ||
+        error.message.includes('Failed to fetch')
+      ) {
         throw new Error('Koneksi bermasalah. Periksa koneksi internet Anda.');
       }
-      
+
       throw error;
     }
   }
@@ -99,19 +102,19 @@ class BooksService {
     try {
       const response = await fetch(`${API_BASE_URL}/books`, {
         method: 'GET',
-        headers: this.getAuthHeaders()
+        headers: this.getAuthHeaders(),
       });
-      
+
       return {
         success: response.ok,
         status: response.status,
-        message: response.ok ? 'Koneksi berhasil' : `HTTP ${response.status}`
+        message: response.ok ? 'Koneksi berhasil' : `HTTP ${response.status}`,
       };
     } catch (error) {
       return {
         success: false,
         status: 'ERROR',
-        message: error.message
+        message: error.message,
       };
     }
   }
@@ -119,33 +122,31 @@ class BooksService {
   // Mencari buku - menggunakan client-side filtering karena API tidak mendukung search parameter
   static async searchBooks(query) {
     try {
-      // Ambil semua buku terlebih dahulu
       const allBooks = await this.getAllBooks();
-      
-      // Filter berdasarkan query di client-side
-      const filteredBooks = allBooks.filter(book => {
-        const searchTerms = query.toLowerCase();
-        return (
-          book.title?.toLowerCase().includes(searchTerms) ||
-          book.author?.toLowerCase().includes(searchTerms) ||
-          book.category?.name?.toLowerCase().includes(searchTerms) ||
-          book.publisher?.toLowerCase().includes(searchTerms)
-        );
-      });
-      
+      if (!query) return [];
+      const searchTerms = query.toLowerCase();
+      const filteredBooks = allBooks.filter(
+        (book) =>
+          (book.title && book.title.toLowerCase().includes(searchTerms)) ||
+          (book.author && book.author.toLowerCase().includes(searchTerms)) ||
+          (book.category &&
+            book.category.name &&
+            book.category.name.toLowerCase().includes(searchTerms)) ||
+          (book.publisher && book.publisher.toLowerCase().includes(searchTerms))
+      );
+      // Pastikan return array!
       return filteredBooks;
     } catch (error) {
       console.error('Error searching books:', error);
-      throw error;
+      return [];
     }
   }
-
   // Fungsi untuk meminjam buku (jika API mendukung)
   static async borrowBook(bookId) {
     try {
       const response = await fetch(`${API_BASE_URL}/books/${bookId}/borrow`, {
         method: 'POST',
-        headers: this.getAuthHeaders()
+        headers: this.getAuthHeaders(),
       });
       return await this.handleApiResponse(response);
     } catch (error) {
@@ -159,7 +160,7 @@ class BooksService {
     try {
       const response = await fetch(`${API_BASE_URL}/books/${bookId}/return`, {
         method: 'POST',
-        headers: this.getAuthHeaders()
+        headers: this.getAuthHeaders(),
       });
       return await this.handleApiResponse(response);
     } catch (error) {
@@ -174,7 +175,7 @@ class BooksService {
   // Ekstrak semua kategori unik dari data buku
   static extractCategoriesFromBooks(books) {
     try {
-      const categories = [...new Set(books.map(book => book.category?.name).filter(Boolean))];
+      const categories = [...new Set(books.map((book) => book.category?.name).filter(Boolean))];
       return categories.sort(); // Sort alphabetically
     } catch (error) {
       console.error('Error extracting categories:', error);
@@ -185,11 +186,11 @@ class BooksService {
   // Filter buku berdasarkan kategori dari data yang sudah ada
   static filterBooksByCategory(books, categoryName, limit = null) {
     try {
-      const filtered = books.filter(book => {
+      const filtered = books.filter((book) => {
         if (!book.category?.name) return false;
         return book.category.name.toLowerCase() === categoryName.toLowerCase();
       });
-      
+
       return limit ? filtered.slice(0, limit) : filtered;
     } catch (error) {
       console.error('Error filtering books by category:', error);
@@ -200,9 +201,7 @@ class BooksService {
   // Get latest books (berdasarkan createdAt)
   static getLatestBooks(books, limit = 5) {
     try {
-      return books
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-        .slice(0, limit);
+      return books.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, limit);
     } catch (error) {
       console.error('Error getting latest books:', error);
       return [];
@@ -212,7 +211,7 @@ class BooksService {
   // Get books by availability
   static getAvailableBooks(books, limit = null) {
     try {
-      const filtered = books.filter(book => book.available === true);
+      const filtered = books.filter((book) => book.available === true);
       return limit ? filtered.slice(0, limit) : filtered;
     } catch (error) {
       console.error('Error getting available books:', error);
@@ -224,28 +223,26 @@ class BooksService {
   static getBooksBy(books, criteria, limit = null) {
     try {
       let filtered = books;
-      
+
       // Filter berdasarkan kriteria yang diberikan
       if (criteria.available !== undefined) {
-        filtered = filtered.filter(book => book.available === criteria.available);
+        filtered = filtered.filter((book) => book.available === criteria.available);
       }
-      
+
       if (criteria.category) {
-        filtered = filtered.filter(book => 
-          book.category?.name?.toLowerCase() === criteria.category.toLowerCase()
+        filtered = filtered.filter(
+          (book) => book.category?.name?.toLowerCase() === criteria.category.toLowerCase()
         );
       }
-      
+
       if (criteria.language) {
-        filtered = filtered.filter(book => 
-          book.language?.toLowerCase() === criteria.language.toLowerCase()
+        filtered = filtered.filter(
+          (book) => book.language?.toLowerCase() === criteria.language.toLowerCase()
         );
       }
-      
+
       if (criteria.publicationYear) {
-        filtered = filtered.filter(book => 
-          book.publicationYear === criteria.publicationYear
-        );
+        filtered = filtered.filter((book) => book.publicationYear === criteria.publicationYear);
       }
 
       // Sorting
@@ -267,7 +264,7 @@ class BooksService {
             break;
         }
       }
-      
+
       return limit ? filtered.slice(0, limit) : filtered;
     } catch (error) {
       console.error('Error getting books by criteria:', error);
@@ -276,26 +273,26 @@ class BooksService {
   }
 
   // Format data buku untuk konsistensi UI
-  static formatBookData(book) {
-    try {
-      return {
-        id: book.id,
-        title: (book.title || 'Judul tidak tersedia').trim(),
-        author: (book.author || 'Penulis tidak diketahui').trim(),
-        publisher: (book.publisher || '').trim(),
-        publicationYear: book.publicationYear || '',
-        isbn: book.isbn || '',
-        pages: book.pages || 0,
-        language: (book.language || 'Indonesia').trim(),
-        shelf: (book.shelf || '').trim(),
-        location: (book.location || '').trim(),
-        available: book.available !== undefined ? book.available : false,
-        image: book.imageUrl || '/images/default-book.png',
-        category: book.category?.name || 'Umum',
-        categoryId: book.categoryId || book.category?.id || null,
-        createdAt: book.createdAt || new Date().toISOString()
-      };
-    } catch (error) {
+ static formatBookData(book) {
+  try {
+    return {
+      id: book.id,
+      title: (book.title || 'Judul tidak tersedia').trim(),
+      author: (book.author || 'Penulis tidak diketahui').trim(),
+      publisher: (book.publisher || '').trim(),
+      publicationYear: book.publicationYear || '',
+      isbn: book.isbn || '',
+      pages: book.pages || 0,
+      language: (book.language || 'Indonesia').trim(),
+      shelf: (book.shelf || '').trim(),
+      location: (book.location || '').trim(),
+      available: book.available !== undefined ? book.available : false,
+      image: book.image || book.imageUrl || '/images/default-book.png', // <-- perbaiki di sini
+      category: book.category?.name || 'Umum',
+      categoryId: book.categoryId || book.category?.id || null,
+      createdAt: book.createdAt || new Date().toISOString(),
+    };
+  } catch (error) {
       console.error('Error formatting book data:', error);
       return {
         id: book.id || 'unknown',
@@ -312,7 +309,7 @@ class BooksService {
         category: 'Umum',
         categoryId: null,
         available: false,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
     }
   }
@@ -330,7 +327,7 @@ class BooksService {
         status: loan.status ? loan.status.toLowerCase() : 'borrowed', // FIXED: convert to lowercase
         fine: loan.fine || 0,
         userId: loan.userId,
-        createdAt: loan.createdAt || new Date().toISOString()
+        createdAt: loan.createdAt || new Date().toISOString(),
       };
     } catch (error) {
       console.error('Error formatting loan data:', error);
@@ -344,7 +341,7 @@ class BooksService {
         status: 'unknown',
         fine: 0,
         userId: null,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
     }
   }
@@ -353,13 +350,13 @@ class BooksService {
   static getBookStatistics(books) {
     try {
       const totalBooks = books.length;
-      const availableBooks = books.filter(book => book.available).length;
+      const availableBooks = books.filter((book) => book.available).length;
       const categoriesCount = this.extractCategoriesFromBooks(books).length;
-      const languages = [...new Set(books.map(book => book.language).filter(Boolean))];
-      
+      const languages = [...new Set(books.map((book) => book.language).filter(Boolean))];
+
       // Statistik per kategori
       const categoryStats = {};
-      books.forEach(book => {
+      books.forEach((book) => {
         const categoryName = book.category?.name || 'Lainnya';
         if (!categoryStats[categoryName]) {
           categoryStats[categoryName] = { total: 0, available: 0 };
@@ -369,14 +366,14 @@ class BooksService {
           categoryStats[categoryName].available++;
         }
       });
-      
+
       return {
         total: totalBooks,
         available: availableBooks,
         borrowed: totalBooks - availableBooks,
         categories: categoriesCount,
         languages: languages.length,
-        categoryBreakdown: categoryStats
+        categoryBreakdown: categoryStats,
       };
     } catch (error) {
       console.error('Error getting book statistics:', error);
@@ -386,7 +383,7 @@ class BooksService {
         borrowed: 0,
         categories: 0,
         languages: 0,
-        categoryBreakdown: {}
+        categoryBreakdown: {},
       };
     }
   }
@@ -395,25 +392,25 @@ class BooksService {
   static getLoanStatistics(loans) {
     try {
       const totalLoans = loans.length;
-      const activeLoans = loans.filter(loan => 
-        loan.status && loan.status.toLowerCase() === 'borrowed'
+      const activeLoans = loans.filter(
+        (loan) => loan.status && loan.status.toLowerCase() === 'borrowed'
       ).length;
-      const returnedLoans = loans.filter(loan => 
-        loan.status && loan.status.toLowerCase() === 'returned'
+      const returnedLoans = loans.filter(
+        (loan) => loan.status && loan.status.toLowerCase() === 'returned'
       ).length;
-      const overdueLoans = loans.filter(loan => {
+      const overdueLoans = loans.filter((loan) => {
         if (!loan.status || loan.status.toLowerCase() !== 'borrowed' || !loan.dueDate) return false;
         return new Date(loan.dueDate) < new Date();
       }).length;
-      
+
       const totalFines = loans.reduce((sum, loan) => sum + (loan.fine || 0), 0);
-      
+
       return {
         total: totalLoans,
         active: activeLoans,
         returned: returnedLoans,
         overdue: overdueLoans,
-        totalFines: totalFines
+        totalFines: totalFines,
       };
     } catch (error) {
       console.error('Error getting loan statistics:', error);
@@ -422,7 +419,7 @@ class BooksService {
         active: 0,
         returned: 0,
         overdue: 0,
-        totalFines: 0
+        totalFines: 0,
       };
     }
   }
@@ -430,30 +427,30 @@ class BooksService {
   // Utility function untuk validasi data buku
   static validateBookData(book) {
     const errors = [];
-    
+
     if (!book.title || book.title.trim() === '') {
       errors.push('Judul buku harus diisi');
     }
-    
+
     if (!book.author || book.author.trim() === '') {
       errors.push('Penulis buku harus diisi');
     }
-    
+
     if (!book.category || !book.category.name) {
       errors.push('Kategori buku harus diisi');
     }
-    
+
     if (book.isbn && book.isbn.length < 10) {
       errors.push('ISBN tidak valid');
     }
-    
+
     if (book.pages && (isNaN(book.pages) || book.pages <= 0)) {
       errors.push('Jumlah halaman harus berupa angka positif');
     }
-    
+
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -474,7 +471,7 @@ class BooksService {
 
   // Utility function untuk membersihkan data yang mengandung tab/whitespace
   static cleanBookData(books) {
-    return books.map(book => this.formatBookData(book));
+    return books.map((book) => this.formatBookData(book));
   }
 
   // Utility function untuk mengecek ketersediaan buku
@@ -483,7 +480,7 @@ class BooksService {
       available: book.available === true,
       status: book.available ? 'Tersedia' : 'Sedang Dipinjam',
       location: book.location?.trim() || 'Lokasi tidak diketahui',
-      shelf: book.shelf?.trim() || 'Rak tidak diketahui'
+      shelf: book.shelf?.trim() || 'Rak tidak diketahui',
     };
   }
 
@@ -491,7 +488,7 @@ class BooksService {
   static getBookInfo(book) {
     const formattedBook = this.formatBookData(book);
     const availability = this.checkBookAvailability(book);
-    
+
     return {
       ...formattedBook,
       ...availability,
@@ -500,8 +497,8 @@ class BooksService {
       bookCode: formattedBook.isbn || formattedBook.id,
       categoryInfo: {
         id: formattedBook.categoryId,
-        name: formattedBook.category
-      }
+        name: formattedBook.category,
+      },
     };
   }
 
@@ -511,7 +508,7 @@ class BooksService {
       const startIndex = (page - 1) * limit;
       const endIndex = startIndex + limit;
       const paginatedBooks = books.slice(startIndex, endIndex);
-      
+
       return {
         data: paginatedBooks,
         pagination: {
@@ -520,8 +517,8 @@ class BooksService {
           totalItems: books.length,
           itemsPerPage: limit,
           hasNextPage: endIndex < books.length,
-          hasPrevPage: page > 1
-        }
+          hasPrevPage: page > 1,
+        },
       };
     } catch (error) {
       console.error('Error paginating books:', error);
@@ -533,8 +530,8 @@ class BooksService {
           totalItems: 0,
           itemsPerPage: limit,
           hasNextPage: false,
-          hasPrevPage: false
-        }
+          hasPrevPage: false,
+        },
       };
     }
   }
@@ -546,7 +543,7 @@ class BooksService {
       return date.toLocaleDateString('id-ID', {
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
+        day: 'numeric',
       });
     } catch (error) {
       console.error('Error formatting date:', error);
@@ -557,9 +554,7 @@ class BooksService {
   // ADDED: Get active loans (borrowed books)
   static getActiveLoans(loans) {
     try {
-      return loans.filter(loan => 
-        loan.status && loan.status.toLowerCase() === 'borrowed'
-      );
+      return loans.filter((loan) => loan.status && loan.status.toLowerCase() === 'borrowed');
     } catch (error) {
       console.error('Error getting active loans:', error);
       return [];
@@ -569,7 +564,7 @@ class BooksService {
   // ADDED: Get overdue loans
   static getOverdueLoans(loans) {
     try {
-      return loans.filter(loan => this.isBookOverdue(loan));
+      return loans.filter((loan) => this.isBookOverdue(loan));
     } catch (error) {
       console.error('Error getting overdue loans:', error);
       return [];

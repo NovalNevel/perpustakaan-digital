@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import BooksService from '../services/books';
 
 const Section = ({ title, books, loading, error }) => {
   const navigate = useNavigate();
-  
+
   const getCategorySlug = (title) => {
-    return title.toLowerCase()
+    return title
+      .toLowerCase()
       .replace(/\s+/g, '-')
       .replace(/[^\w\-]/g, '');
   };
@@ -22,7 +22,7 @@ const Section = ({ title, books, loading, error }) => {
       <section className="mt-12">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-[#012e4a]">{title}</h2>
-          <button 
+          <button
             disabled
             className="flex flex-col items-center justify-center px-[17px] py-[9px] w-[165px] h-[39px] min-h-[1px] bg-gray-300 border border-gray-300 rounded-[20px] text-gray-500 text-sm cursor-not-allowed"
           >
@@ -51,7 +51,7 @@ const Section = ({ title, books, loading, error }) => {
       <section className="mt-12">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-[#012e4a]">{title}</h2>
-          <button 
+          <button
             onClick={handleLihatSemua}
             className="flex flex-col items-center justify-center px-[17px] py-[9px] w-[165px] h-[39px] min-h-[1px] bg-white border border-gray-300 rounded-[20px] text-black text-sm hover:bg-[#012e4a] hover:text-white transition-colors duration-300"
           >
@@ -60,8 +60,9 @@ const Section = ({ title, books, loading, error }) => {
         </div>
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
           <p className="text-sm">
-            <span className="font-medium">Gagal memuat data buku.</span> 
-            <br />Silakan periksa koneksi internet Anda dan coba lagi nanti.
+            <span className="font-medium">Gagal memuat data buku.</span>
+            <br />
+            Silakan periksa koneksi internet Anda dan coba lagi nanti.
           </p>
         </div>
       </section>
@@ -73,7 +74,7 @@ const Section = ({ title, books, loading, error }) => {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-bold text-[#012e4a]">{title}</h2>
         {books.length > 0 && (
-          <button 
+          <button
             onClick={handleLihatSemua}
             className="flex flex-col items-center justify-center px-[17px] py-[9px] w-[165px] h-[39px] min-h-[1px] bg-white border border-gray-300 rounded-[20px] text-black text-sm hover:bg-[#012e4a] hover:text-white transition-colors duration-300 shadow-sm"
           >
@@ -81,39 +82,37 @@ const Section = ({ title, books, loading, error }) => {
           </button>
         )}
       </div>
-      
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
         {books.length > 0 ? (
           books.map((book) => (
             <Link key={book.id} to={`/book/${book.id}`}>
-              <div className="text-center transform hover:scale-105 transition-transform duration-300 hover:shadow-lg cursor-pointer group">
-                <div className="bg-white rounded-lg shadow-sm p-3 group-hover:shadow-md transition-shadow duration-300">
+              <div className="group transform transition-transform duration-300 hover:scale-105 rounded-xl overflow-hidden bg-white border border-gray-100 shadow-sm hover:shadow-xl hover:border-gray-200 cursor-pointer">
+                <div className="overflow-hidden">
                   <img
                     src={book.image}
                     alt={book.title}
-                    className="mx-auto w-full aspect-[3/4] object-cover rounded-md"
+                    className="w-full aspect-[3/4] object-cover transition-all duration-300 ease-in-out"
                     onError={(e) => {
                       e.target.src = '/images/default-book.png';
                     }}
                     loading="lazy"
                   />
                 </div>
-                <div className="mt-3 space-y-2">
-                  <p className="text-sm font-semibold text-[#012e4a] line-clamp-2 leading-tight min-h-[2.5rem]">
+                <div className="p-3 space-y-1">
+                  <p className="text-sm font-semibold text-[#012e4a] line-clamp-2 min-h-[2.5rem]">
                     {book.title}
                   </p>
-                  <p className="text-xs text-gray-600 line-clamp-1 min-h-[1rem]">
-                    {book.author}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className={`inline-block px-2 py-1 text-xs rounded-full font-medium ${
-                      book.available 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
+                  <p className="text-xs text-gray-600 line-clamp-1 min-h-[1rem]">{book.author}</p>
+                  <div className="flex items-center justify-between mt-1">
+                    <span
+                      className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                        book.available ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                      }`}
+                    >
                       {book.available ? 'Tersedia' : 'Dipinjam'}
                     </span>
-                    <span className="text-xs text-gray-500 truncate max-w-[60px]">
+                    <span className="text-[10px] text-gray-500 truncate max-w-[70px]">
                       {book.category}
                     </span>
                   </div>
@@ -122,15 +121,27 @@ const Section = ({ title, books, loading, error }) => {
             </Link>
           ))
         ) : (
-          <div className="col-span-full text-center py-12 text-gray-500">
+          <div className="col-span-full text-center py-14 text-gray-500">
             <div className="max-w-sm mx-auto">
-              <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center shadow-sm">
+                <svg
+                  className="w-8 h-8 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                  />
                 </svg>
               </div>
               <p className="text-base font-medium text-gray-600">Tidak ada buku tersedia</p>
-              <p className="text-sm text-gray-500 mt-1">untuk kategori {title}</p>
+              <p className="text-sm text-gray-500 mt-1">
+                untuk kategori <span className="font-semibold text-gray-700">"{title}"</span>
+              </p>
             </div>
           </div>
         )}
@@ -141,7 +152,7 @@ const Section = ({ title, books, loading, error }) => {
 
 const CategoryFilter = ({ categories, loading, onCategoryClick }) => {
   const navigate = useNavigate();
-  
+
   const handleCategoryClick = (category) => {
     const categorySlug = category.toLowerCase().replace(/\s+/g, '-');
     if (onCategoryClick) {
@@ -154,10 +165,7 @@ const CategoryFilter = ({ categories, loading, onCategoryClick }) => {
     return (
       <div className="flex flex-wrap gap-3 justify-center py-8 bg-white">
         {[...Array(6)].map((_, index) => (
-          <div
-            key={index}
-            className="w-[140px] h-[36px] bg-gray-300 rounded animate-pulse"
-          />
+          <div key={index} className="w-[140px] h-[36px] bg-gray-300 rounded animate-pulse" />
         ))}
       </div>
     );
@@ -188,11 +196,28 @@ const CategoryFilter = ({ categories, loading, onCategoryClick }) => {
   );
 };
 
+const highlightText = (text, keyword) => {
+  if (!keyword) return text;
+  const parts = text.split(new RegExp(`(${keyword})`, 'gi'));
+  return parts.map((part, i) =>
+    part.toLowerCase() === keyword.toLowerCase() ? (
+      <span key={i} className="bg-yellow-200 font-medium">
+        {part}
+      </span>
+    ) : (
+      part
+    )
+  );
+};
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
-  
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState(null);
+
   // State untuk data buku dan kategori
   const [allBooks, setAllBooks] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -206,7 +231,7 @@ const Dashboard = () => {
     const token = sessionStorage.getItem('accessToken');
     setIsLoggedIn(!!token);
     setLoading(false);
-    
+
     loadInitialData();
   }, []);
 
@@ -215,19 +240,19 @@ const Dashboard = () => {
       setBooksLoading(true);
       setCategoriesLoading(true);
       setError(null);
-      
+
       // Load semua buku dari API
       const booksResponse = await BooksService.getAllBooks();
-      
+
       if (booksResponse && Array.isArray(booksResponse)) {
         // Format data buku
-        const formattedBooks = booksResponse.map(book => BooksService.formatBookData(book));
+        const formattedBooks = booksResponse.map((book) => BooksService.formatBookData(book));
         setAllBooks(formattedBooks);
-        
+
         // Ekstrak kategori dari data buku yang ada
         const extractedCategories = BooksService.extractCategoriesFromBooks(booksResponse);
         setCategories(extractedCategories);
-        
+
         // Debug logging
         console.log('Total books loaded:', formattedBooks.length);
         console.log('Categories found:', extractedCategories);
@@ -235,7 +260,6 @@ const Dashboard = () => {
       } else {
         throw new Error('Data buku tidak valid');
       }
-      
     } catch (err) {
       console.error('Error loading initial data:', err);
       setError(err.message || 'Gagal memuat data buku');
@@ -251,26 +275,41 @@ const Dashboard = () => {
       alert('Masukkan kata kunci pencarian');
       return;
     }
-    
+
+    setSearchError(null);
+    setSearchLoading(true);
+
     try {
-      setBooksLoading(true);
-      const searchResults = await BooksService.searchBooks(searchQuery);
-      
-      // Navigate to search results page
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      const results = await BooksService.searchBooks(searchQuery);
+      console.log('Search results:', results);
+      const formattedResults = results.map((book) => BooksService.formatBookData(book));
+      setSearchResults(formattedResults);
+      if (formattedResults.length === 0) {
+        setSearchError('Tidak ada buku yang cocok dengan pencarian Anda.');
+      }
     } catch (err) {
-      console.error('Error searching books:', err);
-      alert('Gagal melakukan pencarian. Silakan coba lagi.');
+      setSearchError('Gagal melakukan pencarian. Silakan coba lagi.');
+      console.error(err);
     } finally {
-      setBooksLoading(false);
+      setSearchLoading(false);
     }
   };
 
-  const handleKeyPress = (e) => {
+  // Tangkap enter key untuk pencarian
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
+      e.preventDefault();
       handleSearch();
     }
   };
+
+  // Reset hasil pencarian kalau input kosong
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setSearchResults([]);
+      setSearchError(null);
+    }
+  }, [searchQuery]);
 
   // FIXED: Get books by category dengan debugging
   const getBooksByCategory = (sectionTitle) => {
@@ -278,10 +317,10 @@ const Dashboard = () => {
       console.log(`No books available for section: ${sectionTitle}`);
       return [];
     }
-    
+
     try {
       let result = [];
-      
+
       switch (sectionTitle) {
         case 'Buku Terbaru':
           result = BooksService.getLatestBooks(allBooks, 5);
@@ -291,30 +330,36 @@ const Dashboard = () => {
           break;
         default:
           // Untuk kategori regular, pastikan menggunakan nama kategori yang tepat
-          result = allBooks.filter(book => {
-            // Debug logging
-            const bookCategory = book.category;
-            const matches = bookCategory && bookCategory.toLowerCase() === sectionTitle.toLowerCase();
-            
-            if (bookCategory) {
-              console.log(`Book: ${book.title}, Category: ${bookCategory}, Matches ${sectionTitle}:`, matches);
-            }
-            
-            return matches;
-          }).slice(0, 5);
-          
+          result = allBooks
+            .filter((book) => {
+              // Debug logging
+              const bookCategory = book.category;
+              const matches =
+                bookCategory && bookCategory.toLowerCase() === sectionTitle.toLowerCase();
+
+              if (bookCategory) {
+                console.log(
+                  `Book: ${book.title}, Category: ${bookCategory}, Matches ${sectionTitle}:`,
+                  matches
+                );
+              }
+
+              return matches;
+            })
+            .slice(0, 5);
+
           // Alternative jika filter di atas tidak berhasil, coba dengan BooksService
           if (result.length === 0) {
             result = BooksService.filterBooksByCategory(allBooks, sectionTitle, 5);
           }
           break;
       }
-      
+
       console.log(`Books found for "${sectionTitle}":`, result.length);
       if (result.length > 0) {
         console.log('Sample book from this category:', result[0]);
       }
-      
+
       return result;
     } catch (error) {
       console.error(`Error getting books for category "${sectionTitle}":`, error);
@@ -351,27 +396,99 @@ const Dashboard = () => {
 
       {/* Search & Action Bar */}
       <div className="flex items-center w-full px-6 py-6 bg-white border-b border-gray-100">
+        {/* Spacer */}
         <div className="w-1/4" />
-        <div className="flex items-center gap-4 flex-1 justify-center">
+
+        {/* Search Bar */}
+        <div className="flex items-center gap-4 flex-1 justify-center relative">
           <img src="/images/LandingPages/Logo1.png" alt="Baca Buku" className="w-15 h-15" />
-          <div className="flex items-center bg-gray-50 border border-gray-300 rounded-full shadow-sm overflow-hidden w-full max-w-xl hover:shadow-md transition-shadow duration-300">
+
+          <div className="relative flex items-center bg-gray-50 border border-gray-300 rounded-full shadow-sm overflow-hidden w-full max-w-xl hover:shadow-md transition-shadow duration-300">
             <input
               type="text"
               placeholder="Cari judul buku, penulis, atau kategori..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onKeyDown={handleKeyDown}
               className="flex-1 px-4 py-3 outline-none bg-transparent text-gray-700 placeholder-gray-500"
             />
-            <button 
+            <button
               onClick={handleSearch}
               className="w-[48px] h-[48px] flex items-center justify-center bg-[#012E4A] hover:bg-[#014a6b] transition-colors duration-300"
-              disabled={!searchQuery.trim()}
+              disabled={!searchQuery.trim() || searchLoading}
             >
               <img src="/images/Pencarian.png" alt="Cari" className="w-5 h-5" />
             </button>
           </div>
+
+          {/* Loading */}
+          {searchLoading && (
+            <div className="absolute top-full mt-2 left-0 w-full bg-white border border-gray-200 rounded-lg shadow-xl z-50 max-h-96 overflow-y-auto p-2 space-y-2">
+              {[...Array(4)].map((_, idx) => (
+                <div key={idx} className="flex items-center gap-4 p-2 animate-pulse">
+                  <div className="w-14 h-20 bg-gray-200 rounded-md" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                    <div className="h-3 bg-gray-100 rounded w-1/3"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Error */}
+          {searchError && (
+            <div className="absolute top-full mt-2 left-0 w-full flex justify-center z-50">
+              <div className="bg-red-100 text-red-700 px-4 py-2 rounded shadow">{searchError}</div>
+            </div>
+          )}
+
+          {/* Results */}
+          {searchResults.length > 0 && (
+            <div className="absolute top-full mt-2 left-0 w-full bg-white border border-gray-200 rounded-lg shadow-xl z-50 max-h-96 overflow-y-auto p-2">
+              {searchResults.map((book) => (
+                <div
+                  key={book.id}
+                  className="flex items-center gap-4 p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-all"
+                  onClick={() => navigate(`/book/${book.id}`)}
+                >
+                  {/* Gambar dari lokal */}
+                  <img
+                    src={book.image}
+                    alt={book.title}
+                    className="w-14 h-20 object-cover rounded-md shadow-sm"
+                    onError={(e) => (e.target.src = '/images/default-book.png')}
+                  />
+
+                  {/* Info Buku */}
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-gray-800 line-clamp-2">
+                      {highlightText(book.title, searchQuery)}
+                    </p>
+                    <p className="text-xs text-gray-600 line-clamp-1">
+                      Penulis: {highlightText(book.author, searchQuery)}
+                    </p>
+                    <div className="flex items-center justify-between mt-1">
+                      <span
+                        className={`inline-block px-2 py-0.5 text-xs rounded-full font-medium ${
+                          book.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }`}
+                      >
+                        {book.available ? 'Tersedia' : 'Dipinjam'}
+                      </span>
+                      <span className="text-xs text-gray-500 truncate max-w-[80px]">
+                        {book.category}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
+
+        {/* Login/Profile Section */}
         <div className="flex items-center gap-3 w-1/4 justify-end">
           {!loading &&
             (isLoggedIn ? (
@@ -401,6 +518,7 @@ const Dashboard = () => {
         </div>
       </div>
 
+      {/* Bottom shadow bar */}
       <div className="h-[6px] bg-[#f0f1f2] w-full filter drop-shadow-[0_4px_4px_rgba(1,46,74,0.5)]" />
 
       {/* Konten Utama */}
@@ -410,8 +528,18 @@ const Dashboard = () => {
           <div className="mt-8 bg-red-50 border border-red-200 rounded-lg p-6 text-center">
             <div className="max-w-md mx-auto">
               <div className="w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
-                <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-6 h-6 text-red-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-red-800 mb-2">Gagal Memuat Data</h3>
@@ -427,36 +555,36 @@ const Dashboard = () => {
         )}
 
         {/* Category Filter */}
-        <CategoryFilter 
-          categories={categories} 
-          loading={categoriesLoading} 
+        <CategoryFilter
+          categories={categories}
+          loading={categoriesLoading}
           onCategoryClick={handleCategoryFilter}
         />
-        
+
         {/* Section Buku Terbaru */}
-        <Section 
-          title="Buku Terbaru" 
-          books={getBooksByCategory('Buku Terbaru')} 
-          loading={booksLoading} 
-          error={error} 
+        <Section
+          title="Buku Terbaru"
+          books={getBooksByCategory('Buku Terbaru')}
+          loading={booksLoading}
+          error={error}
         />
-        
+
         {/* Section Buku Tersedia */}
-        <Section 
-          title="Buku Tersedia" 
-          books={getBooksByCategory('Buku Tersedia')} 
-          loading={booksLoading} 
-          error={error} 
+        <Section
+          title="Buku Tersedia"
+          books={getBooksByCategory('Buku Tersedia')}
+          loading={booksLoading}
+          error={error}
         />
-        
+
         {/* Dynamic sections berdasarkan kategori yang ada */}
         {categories.slice(0, 3).map((category) => (
-          <Section 
+          <Section
             key={category}
-            title={category} 
-            books={getBooksByCategory(category)} 
-            loading={booksLoading} 
-            error={error} 
+            title={category}
+            books={getBooksByCategory(category)}
+            loading={booksLoading}
+            error={error}
           />
         ))}
 
@@ -485,13 +613,13 @@ const Dashboard = () => {
               </div>
               <div className="text-center p-4 bg-green-50 rounded-lg">
                 <div className="text-2xl font-bold text-green-600">
-                  {allBooks.filter(book => book.available).length}
+                  {allBooks.filter((book) => book.available).length}
                 </div>
                 <div className="text-sm text-gray-600">Buku Tersedia</div>
               </div>
               <div className="text-center p-4 bg-red-50 rounded-lg">
                 <div className="text-2xl font-bold text-red-600">
-                  {allBooks.filter(book => !book.available).length}
+                  {allBooks.filter((book) => !book.available).length}
                 </div>
                 <div className="text-sm text-gray-600">Sedang Dipinjam</div>
               </div>
