@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { verifyToken as verifyJwtToken, JwtPayload } from '../utils/jwt';
 
-const jwtSecret = process.env.JWT_SECRET || 'your_secret';
-
-export interface AuthRequest extends Request {
-    user?: {
-        userId: string;
-        username: string;
-        role: string;
+interface CustomRequest extends Request {
+    headers: {
+        authorization?: string;
     };
+}
+
+export interface AuthRequest extends CustomRequest {
+    user?: JwtPayload;
 }
 
 export function verifyToken(req: AuthRequest, res: Response, next: NextFunction): void {
@@ -19,7 +19,7 @@ export function verifyToken(req: AuthRequest, res: Response, next: NextFunction)
         return;
     }
     try {
-        const decoded = jwt.verify(token, jwtSecret) as any;
+        const decoded = verifyJwtToken(token);
         req.user = decoded;
         return next();
     } catch (err) {
@@ -40,4 +40,3 @@ export function isAdmin(req: AuthRequest, res: Response, next: NextFunction): vo
     }
     return next();
 }
-
