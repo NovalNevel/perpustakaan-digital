@@ -15,6 +15,7 @@ export const getBooks = async (_req: Request, res: Response) => {
     }
 };
 
+// Mendapatkan detail buku berdasarkan ID
 export const getBookById = async (req: Request, res: Response) => {
     const { id } = req.params;
 
@@ -33,6 +34,7 @@ export const getBookById = async (req: Request, res: Response) => {
     }
 };
 
+// Menambahkan buku baru
 export const createBook = async (req: Request, res: Response) => {
     const { title, author, publisher, publicationYear, isbn, pages, language, shelf, location, categoryName } = req.body;
     const imageUrl = req.file?.path;
@@ -76,6 +78,7 @@ export const createBook = async (req: Request, res: Response) => {
     }
 };
 
+// Update buku
 export const updateBook = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { title, author, publisher, publicationYear, isbn, pages, language, shelf, location, categoryName } = req.body;
@@ -120,6 +123,7 @@ export const updateBook = async (req: Request, res: Response) => {
     }
 };
 
+// Delete buku
 export const deleteBook = async (req: Request, res: Response) => {
     const { id } = req.params;
 
@@ -132,6 +136,7 @@ export const deleteBook = async (req: Request, res: Response) => {
     }
 };
 
+// Mendapatkan daftar kategori
 export const getCategories = async (_req: Request, res: Response) => {
     try {
         const categories = await prisma.category.findMany({
