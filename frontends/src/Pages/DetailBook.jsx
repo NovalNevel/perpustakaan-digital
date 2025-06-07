@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import BooksService from '../services/books'; // Sesuaikan path dengan struktur folder Anda
+import { SmoothCursor } from '@/components/magicui/smooth-cursor';
 
 const BookDetail = () => {
   const { id } = useParams();
@@ -84,6 +85,7 @@ const BookDetail = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f2f7ff] to-[#d6e4f0] py-8 px-4">
+      <SmoothCursor />
       <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 bg-[#012e4a] text-white">

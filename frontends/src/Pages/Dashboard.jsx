@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import BooksService from '../services/books';
+import { SmoothCursor } from '@/components/magicui/smooth-cursor';
 
 const Section = ({ title, books, loading, error }) => {
   const navigate = useNavigate();
@@ -72,6 +73,7 @@ const Section = ({ title, books, loading, error }) => {
   return (
     <section className="mt-12">
       <div className="flex justify-between items-center mb-6">
+        <SmoothCursor />
         <h2 className="text-xl font-bold text-[#012e4a]">{title}</h2>
         {books.length > 0 && (
           <button
@@ -84,6 +86,7 @@ const Section = ({ title, books, loading, error }) => {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+        <SmoothCursor />
         {books.length > 0 ? (
           books.map((book) => (
             <Link key={book.id} to={`/book/${book.id}`}>
@@ -122,6 +125,7 @@ const Section = ({ title, books, loading, error }) => {
           ))
         ) : (
           <div className="col-span-full text-center py-14 text-gray-500">
+            <SmoothCursor />
             <div className="max-w-sm mx-auto">
               <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center shadow-sm">
                 <svg
@@ -173,6 +177,7 @@ const CategoryFilter = ({ categories, loading, onCategoryClick }) => {
 
   return (
     <div className="py-8 bg-white">
+      <SmoothCursor />
       <div className="flex flex-wrap gap-3 justify-center">
         {categories.slice(0, 8).map((cat, i) => (
           <button
@@ -214,6 +219,8 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  // State untuk hasil pencarian
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(null);
@@ -378,6 +385,7 @@ const Dashboard = () => {
 
   return (
     <div className="font-sans bg-gray-50 min-h-screen">
+      <SmoothCursor />
       {/* Header */}
       <header className="relative flex flex-row items-center bg-white px-6 py-4 shadow-sm">
         <div className="absolute w-[160px] h-[80px] top-0 left-0 bg-[#012E4A] rounded-tr-[100px] z-0" />

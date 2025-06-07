@@ -109,8 +109,18 @@
 @layer base {
   * {
     @apply border-border;
+    cursor: none; /* Hilangkan default cursor */
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+
+  button,
+  a,
+  input,
+  textarea,
+  select {
+    cursor: none !important; /* Pastikan semua elemen interaktif tidak pakai default cursor */
   }
 }

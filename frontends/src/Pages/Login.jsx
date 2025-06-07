@@ -4,6 +4,7 @@ import InputField from '../components/ui/InputField';
 import Button from '../components/ui/Button';
 import auth from '../services/auth';
 import { toast } from 'react-toastify';
+import { SmoothCursor } from '@/components/magicui/smooth-cursor';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -63,6 +64,7 @@ const LoginPage = () => {
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-cover bg-center"
       style={{ backgroundImage: 'url("/images/bg_books.png")' }}
     >
+      <SmoothCursor />
       <div className="flex max-w-5xl w-full rounded-xl shadow-2xl backdrop-blur-md bg-white/90 overflow-hidden relative z-10">
         {/* Kiri */}
         <div className="w-1/2 bg-[#002C4B] text-white flex flex-col justify-between items-center p-8">
