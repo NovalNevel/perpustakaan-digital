@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useSpring } from "motion/react";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface Position {
   x: number;
@@ -9,6 +9,7 @@ interface Position {
 }
 
 export function SmoothCursor() {
+  const [isMobile, setIsMobile] = useState(false);
   const lastMousePos = useRef<Position>({ x: 0, y: 0 });
   const velocity = useRef<Position>({ x: 0, y: 0 });
   const lastUpdateTime = useRef(Date.now());
@@ -37,6 +38,15 @@ export function SmoothCursor() {
   });
 
   useEffect(() => {
+    const checkIsMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkIsMobile();
+    window.addEventListener("resize", checkIsMobile);
+    return () => window.removeEventListener("resize", checkIsMobile);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) return;
+
     const updateVelocity = (currentPos: Position) => {
       const currentTime = Date.now();
       const deltaTime = currentTime - lastUpdateTime.current;
@@ -57,7 +67,7 @@ export function SmoothCursor() {
       updateVelocity(currentPos);
 
       const speed = Math.sqrt(
-        Math.pow(velocity.current.x, 2) + Math.pow(velocity.current.y, 2),
+        velocity.current.x ** 2 + velocity.current.y ** 2,
       );
 
       cursorX.set(currentPos.x);
@@ -99,7 +109,10 @@ export function SmoothCursor() {
       document.body.style.cursor = "auto";
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [cursorX, cursorY, rotation, scale]);
+  }, [isMobile, cursorX, cursorY, rotation, scale]);
+
+  // Jangan render jika mobile
+  if (isMobile) return null;
 
   return (
     <motion.div
@@ -116,7 +129,6 @@ export function SmoothCursor() {
         willChange: "transform",
       }}
     >
-      {/* Ganti SVG sesuai kebutuhan */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width={50}

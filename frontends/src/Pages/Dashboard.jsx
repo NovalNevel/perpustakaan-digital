@@ -318,6 +318,17 @@ const Dashboard = () => {
     }
   }, [searchQuery]);
 
+  // Pencarian otomatis saat mengetik
+  useEffect(() => {
+  const delayDebounce = setTimeout(() => {
+    if (searchQuery.trim()) {
+      handleSearch();
+    }
+  }, 300);
+
+  return () => clearTimeout(delayDebounce);
+}, [searchQuery]);
+
   // FIXED: Get books by category dengan debugging
   const getBooksByCategory = (sectionTitle) => {
     if (!allBooks.length) {
@@ -386,43 +397,51 @@ const Dashboard = () => {
   return (
     <div className="font-sans bg-gray-50 min-h-screen">
       <SmoothCursor />
+
       {/* Header */}
-      <header className="relative flex flex-row items-center bg-white px-6 py-4 shadow-sm">
-        <div className="absolute w-[160px] h-[80px] top-0 left-0 bg-[#012E4A] rounded-tr-[100px] z-0" />
-        <div className="flex items-center gap-4 z-10">
+      <header className="relative flex flex-col sm:flex-row items-center bg-white px-3 sm:px-6 py-4 shadow-sm gap-2 sm:gap-0">
+        <div className="hidden sm:block absolute w-[160px] h-[80px] top-0 left-0 bg-[#012E4A] rounded-tr-[100px] z-0" />
+
+        <div className="hidden sm:flex items-center gap-4 z-10">
           <img src="/images/LandingPages/Logo3.png" alt="Logo Buku" className="h-12 ml-3" />
         </div>
-        <div className="flex-1 flex justify-center z-10">
-          <h1 className="text-2xl font-bold text-[#012e4a] text-center">
+
+        <div className="flex-1 flex justify-center items-center z-10 text-center">
+          <h1 className="text-lg sm:text-2xl font-bold text-[#012e4a] leading-tight">
             Perpustakaan Digital UIN Suska Riau
           </h1>
         </div>
-        <img src="/images/LandingPages/Logo2.png" alt="Logo UIN" className="h-10 z-10 mr-8" />
+
+        <div className="flex items-center z-10 mr-2 sm:mr-8">
+          <img src="/images/LandingPages/Logo2.png" alt="Logo UIN" className="h-8 sm:h-10" />
+        </div>
       </header>
 
       <div className="h-1 bg-[#35a4e9] w-full" />
 
-      {/* Search & Action Bar */}
-      <div className="flex items-center w-full px-6 py-6 bg-white border-b border-gray-100">
-        {/* Spacer */}
-        <div className="w-1/4" />
+      <div className="flex flex-col sm:flex-row items-center w-full px-2 sm:px-6 py-4 sm:py-6 bg-white border-b border-gray-100 gap-3 sm:gap-0">
+        {/* Spacer (Desktop only) */}
+        <div className="hidden sm:block w-1/4" />
 
         {/* Search Bar */}
-        <div className="flex items-center gap-4 flex-1 justify-center relative">
-          <img src="/images/LandingPages/Logo1.png" alt="Baca Buku" className="w-15 h-15" />
-
-          <div className="relative flex items-center bg-gray-50 border border-gray-300 rounded-full shadow-sm overflow-hidden w-full max-w-xl hover:shadow-md transition-shadow duration-300">
+        <div className="flex items-center gap-2 sm:gap-4 flex-1 justify-center relative w-full sm:w-auto">
+          <img
+            src="/images/LandingPages/Logo1.png"
+            alt="Baca Buku"
+            className="w-10 h-10 sm:w-15 sm:h-15"
+          />
+          <div className="relative flex items-center bg-gray-50 border border-gray-300 rounded-full shadow-sm overflow-hidden w-full max-w-full sm:max-w-xl hover:shadow-md transition-shadow duration-300">
             <input
               type="text"
               placeholder="Cari judul buku, penulis, atau kategori..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="flex-1 px-4 py-3 outline-none bg-transparent text-gray-700 placeholder-gray-500"
+              className="flex-1 px-3 sm:px-4 py-2 sm:py-3 outline-none bg-transparent text-gray-700 placeholder-gray-500 text-sm sm:text-base"
             />
             <button
               onClick={handleSearch}
-              className="w-[48px] h-[48px] flex items-center justify-center bg-[#012E4A] hover:bg-[#014a6b] transition-colors duration-300"
+              className="w-10 h-10 sm:w-[48px] sm:h-[48px] flex items-center justify-center bg-[#012E4A] hover:bg-[#014a6b] transition-colors duration-300"
               disabled={!searchQuery.trim() || searchLoading}
             >
               <img src="/images/Pencarian.png" alt="Cari" className="w-5 h-5" />
@@ -461,15 +480,12 @@ const Dashboard = () => {
                   className="flex items-center gap-4 p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-all"
                   onClick={() => navigate(`/book/${book.id}`)}
                 >
-                  {/* Gambar dari lokal */}
                   <img
                     src={book.image}
                     alt={book.title}
                     className="w-14 h-20 object-cover rounded-md shadow-sm"
                     onError={(e) => (e.target.src = '/images/default-book.png')}
                   />
-
-                  {/* Info Buku */}
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-gray-800 line-clamp-2">
                       {highlightText(book.title, searchQuery)}
@@ -497,12 +513,12 @@ const Dashboard = () => {
         </div>
 
         {/* Login/Profile Section */}
-        <div className="flex items-center gap-3 w-1/4 justify-end">
+        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-1/4 justify-end mt-3 sm:mt-0">
           {!loading &&
             (isLoggedIn ? (
               <button
                 onClick={() => navigate('/profile')}
-                className="flex flex-row items-center justify-center px-3 py-2 gap-2 min-w-[90px] h-[40px] bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-sm"
+                className="flex flex-row items-center justify-center px-3 py-2 gap-2 min-w-[90px] h-[40px] bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-sm text-sm"
               >
                 <img src="/images/Profil.png" alt="Akun" className="w-4 h-4" />
                 Profile
@@ -511,13 +527,13 @@ const Dashboard = () => {
               <>
                 <button
                   onClick={() => navigate('/login')}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-sm font-medium"
+                  className="bg-blue-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-sm font-medium text-sm"
                 >
                   Login
                 </button>
                 <button
                   onClick={() => navigate('/register')}
-                  className="bg-white text-blue-600 border border-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors duration-300 shadow-sm font-medium"
+                  className="bg-white text-blue-600 border border-blue-600 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg hover:bg-blue-50 transition-colors duration-300 shadow-sm font-medium text-sm"
                 >
                   Daftar
                 </button>
@@ -527,10 +543,10 @@ const Dashboard = () => {
       </div>
 
       {/* Bottom shadow bar */}
-      <div className="h-[6px] bg-[#f0f1f2] w-full filter drop-shadow-[0_4px_4px_rgba(1,46,74,0.5)]" />
+      <div className="h-[4px] sm:h-[6px] bg-[#f0f1f2] w-full filter drop-shadow-[0_4px_4px_rgba(1,46,74,0.5)]" />
 
       {/* Konten Utama */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      <main className="max-w-full sm:max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 pb-12">
         {/* Error state dengan retry option */}
         {error && !booksLoading && (
           <div className="mt-8 bg-red-50 border border-red-200 rounded-lg p-6 text-center">
