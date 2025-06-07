@@ -1,6 +1,5 @@
 import express from "express";
-import { register, login, refreshToken, logout, getUsers } from "../controllers/auth_controllers";
-import {verifyToken,isAdmin} from "../middlewares/auth";
+import { register, login, refreshToken, logout } from "../controllers/auth_controllers";
 
 const router = express.Router();
 
@@ -20,7 +19,5 @@ router.post("/refresh", async (req, res) => {
 router.post("/logout", async (req, res) => {
     await logout(req, res);
 });
-
-router.get("/users", verifyToken, isAdmin, getUsers);
 
 export default router;
