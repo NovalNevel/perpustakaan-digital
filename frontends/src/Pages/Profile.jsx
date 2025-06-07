@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import auth from '../services/auth';
 import BooksService from '../services/books';
+import { SmoothCursor } from '../components/magicui/smooth-cursor';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const Profile = () => {
   const [loans, setLoans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     const userData = sessionStorage.getItem('user');
@@ -27,7 +29,6 @@ const Profile = () => {
       nim: parsedUser.nim,
     });
 
-    // Fetch loan data
     fetchMyLoans();
   }, [navigate]);
 
@@ -35,8 +36,6 @@ const Profile = () => {
     try {
       setLoading(true);
       const rawLoans = await BooksService.getMyLoans();
-      
-      // Format loan data using BooksService
       const formattedLoans = rawLoans.map(loan => BooksService.formatLoanData(loan));
       setLoans(formattedLoans);
       setError(null);
@@ -89,17 +88,15 @@ const Profile = () => {
     return BooksService.formatDateIndonesia(dateString);
   };
 
-  // Get statistics
   const loanStats = BooksService.getLoanStatistics(loans);
   const activeLoans = BooksService.getActiveLoans(loans);
   const overdueLoans = BooksService.getOverdueLoans(loans);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-200 flex justify-center items-center px-4 py-10">
+      <SmoothCursor />
       <div className="w-full max-w-4xl">
-        {/* Satu Card Besar */}
         <div className="rounded-3xl shadow-2xl overflow-hidden">
-          {/* Bagian Atas: Profil */}
           <div className="bg-[#002C4B] flex flex-col items-center text-center p-8 relative">
             <button
               onClick={() => navigate(-1)}
@@ -109,42 +106,30 @@ const Profile = () => {
               <img src="/images/img_arrowleft.svg" alt="Kembali" className="w-6 h-6" />
             </button>
             <h1 className="text-xl font-bold text-white mb-4">Profil Saya</h1>
-            <img
-              src="/images/Profil.png"
-              alt="Profil"
-              className="w-28 h-28 rounded-full object-cover shadow-md"
-            />
+            {loading ? (
+              <div className="w-28 h-28 rounded-full bg-blue-300 animate-pulse" />
+            ) : (
+              <img
+                src="/images/Profil.png"
+                alt="Profil"
+                className="w-28 h-28 rounded-full object-cover shadow-md"
+              />
+            )}
             <h2 className="mt-4 text-lg font-bold text-white">{user.username}</h2>
             <p className="text-sm text-blue-100">{user.email}</p>
             {user.nim && <p className="text-sm text-blue-100">NIM: {user.nim}</p>}
-            
-            {/* Statistik Peminjaman */}
-            {/* <div className="mt-4 grid grid-cols-3 gap-4 w-full max-w-md">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">{loanStats.total}</div>
-                <div className="text-xs text-blue-100">Total</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-yellow-300">{loanStats.active}</div>
-                <div className="text-xs text-blue-100">Aktif</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-red-300">{loanStats.overdue}</div>
-                <div className="text-xs text-blue-100">Terlambat</div>
-              </div>
-            </div> */}
           </div>
 
-          {/* Bagian Bawah: Status Peminjaman */}
           <div className="bg-white p-8">
             <h3 className="text-center font-semibold text-gray-800 bg-gray-200 py-2 rounded mb-4">
               Status Peminjaman Buku
             </h3>
 
             {loading ? (
-              <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                <p className="mt-2 text-gray-600">Memuat data...</p>
+              <div className="space-y-4">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="animate-pulse bg-gray-200 h-32 rounded-xl"></div>
+                ))}
               </div>
             ) : error ? (
               <div className="text-center py-8">
@@ -220,8 +205,6 @@ const Profile = () => {
                             </p>
                           )}
                         </div>
-                        
-                        {/* Informasi tambahan buku */}
                         <div className="mt-2 text-xs text-gray-500">
                           <p>ISBN: {loan.book?.isbn || 'Tidak tersedia'}</p>
                           <p>Kategori: {loan.book?.category || 'Tidak diketahui'}</p>
@@ -234,7 +217,6 @@ const Profile = () => {
               </div>
             )}
 
-            {/* Tombol Refresh */}
             {!loading && (
               <div className="text-center mt-6">
                 <button
@@ -246,9 +228,8 @@ const Profile = () => {
               </div>
             )}
 
-            {/* Tombol Logout */}
             <button
-              onClick={handleLogout}
+              onClick={() => setShowLogoutModal(true)}
               className="mt-8 w-full bg-red-600 text-white py-3 rounded-xl font-semibold hover:bg-red-700 transition duration-300 shadow-md"
             >
               Logout
@@ -256,6 +237,29 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
+      {showLogoutModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-xl shadow-lg w-80">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">Konfirmasi Logout</h2>
+            <p className="text-sm text-gray-600 mb-6">Apakah Anda yakin ingin keluar?</p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setShowLogoutModal(false)}
+                className="px-4 py-2 text-sm rounded-md bg-gray-200 hover:bg-gray-300"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 text-sm rounded-md bg-red-600 text-white hover:bg-red-700"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -15,6 +15,7 @@ const InputField = ({
   className = '',
   inputClassName = '',
   toggleVisibility = false,
+  autoFocus = false,
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -47,6 +48,7 @@ const InputField = ({
           placeholder={placeholder}
           required={required}
           disabled={disabled}
+          autoFocus={autoFocus}
           onFocus={handleFocus}
           onBlur={handleBlur}
           className={`w-full px-4 py-2 text-[18px] text-[#090446] bg-[#09044633] rounded-[12px] font-poppins
@@ -92,6 +94,7 @@ InputField.propTypes = {
   className: PropTypes.string,
   inputClassName: PropTypes.string,
   toggleVisibility: PropTypes.bool,
+  autoFocus: PropTypes.bool,
 };
 
 export default InputField;

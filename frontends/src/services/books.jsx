@@ -1,3 +1,5 @@
+import fetchWithAuth from "./fetchWithAuth";
+
 // services/books.js
 const API_BASE_URL = 'https://perpustakaan-digital-production-9625.up.railway.app/api';
 
@@ -38,7 +40,7 @@ class BooksService {
   // Mengambil semua buku - menggunakan endpoint /api/books
   static async getAllBooks() {
     try {
-      const response = await fetch(`${API_BASE_URL}/books`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/books`, {
         headers: this.getAuthHeaders(),
       });
       return await this.handleApiResponse(response);
@@ -70,7 +72,7 @@ class BooksService {
         throw new Error('Token tidak ditemukan. Silakan login kembali.');
       }
 
-      const response = await fetch(`${API_BASE_URL}/books/my-loans`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/books/my-loans`, {
         method: 'GET',
         headers: this.getAuthHeaders(),
       });

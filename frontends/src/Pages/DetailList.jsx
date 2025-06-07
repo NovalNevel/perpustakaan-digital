@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import BooksService from '../services/books';
+import { SmoothCursor } from '@/components/magicui/smooth-cursor';
 
 const DetailList = () => {
   const { category } = useParams();
@@ -118,6 +119,7 @@ const DetailList = () => {
   if (loading) {
     return (
       <div className="font-sans bg-white min-h-screen">
+        <SmoothCursor />
         {/* Header - sama seperti sebelumnya */}
         <header className="relative flex flex-row items-center bg-white px-6 py-4 shadow">
           <div className="absolute w-[160px] h-[80px] top-0 left-0 bg-[#012E4A] rounded-tr-[100px] z-0" />
@@ -190,6 +192,7 @@ const DetailList = () => {
 
   return (
     <div className="font-sans bg-white min-h-screen">
+      <SmoothCursor />
       {/* Header - sama seperti Dashboard */}
       <header className="relative flex flex-row items-center bg-white px-6 py-4 shadow">
         <div className="absolute w-[160px] h-[80px] top-0 left-0 bg-[#012E4A] rounded-tr-[100px] z-0" />
