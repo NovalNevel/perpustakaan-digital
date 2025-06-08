@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import auth from '../services/auth';
-import BooksService from '../services/books';
-import { SmoothCursor } from '../components/magicui/smooth-cursor';
+import auth from '../../services/auth.jsx';
+import BooksService from '../../services/books.jsx';
+import { SmoothCursor } from '../../components/magicui/smooth-cursor.js';
 
 const Profile = () => {
   const navigate = useNavigate();

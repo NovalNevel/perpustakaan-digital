@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import BooksService from '../services/books';
-import { SmoothCursor } from '@/components/magicui/smooth-cursor';
+import BooksService from '../../services/books.jsx';
+import { SmoothCursor } from '@/components/magicui/smooth-cursor.js';
 
 const Section = ({ title, books, loading, error }) => {
   const navigate = useNavigate();

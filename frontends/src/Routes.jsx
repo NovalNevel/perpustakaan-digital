@@ -21,7 +21,6 @@ const AppRoutes = () => {
         <Route path="/category/:category" element={<DetailList />} />
         <Route path="/" element={<Dashboard />} /> {/* Default route redirects to dashboard */}
         <Route path="/admin" element={<AdminDashboard />} />
-
       </Routes>
     </Router>
   );

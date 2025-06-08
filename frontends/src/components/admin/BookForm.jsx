@@ -3,15 +3,15 @@ import React from 'react';
 const BookForm = ({ formData, onChange, onSubmit, onFileChange, submitLabel, onCancel, categories }) => (
     <form onSubmit={onSubmit} className="space-y-4" encType="multipart/form-data">
         {[
-            { label: 'Title', name: 'title', type: 'text', required: true },
-            { label: 'Author', name: 'author', type: 'text', required: true },
-            { label: 'Publisher', name: 'publisher' },
-            { label: 'Year', name: 'publicationYear', type: 'text' },
+            { label: 'Judul', name: 'title', type: 'text', required: true },
+            { label: 'Pengarang', name: 'author', type: 'text', required: true },
+            { label: 'Penerbit', name: 'publisher' },
+            { label: 'Tahun Terbit', name: 'publicationYear', type: 'text' },
             { label: 'ISBN', name: 'isbn', type: 'text' },
-            { label: 'Pages', name: 'pages', type: 'number' },
-            { label: 'Language', name: 'language', type: 'text' },
-            { label: 'Shelf', name: 'shelf', type: 'text' },
-            { label: 'Location', name: 'location', type: 'text' },
+            { label: 'Halaman', name: 'pages', type: 'number' },
+            { label: 'Bahasa', name: 'language', type: 'text' },
+            { label: 'Rak', name: 'shelf', type: 'text' },
+            { label: 'Lokasi', name: 'location', type: 'text' },
         ].map(({ label, name, type = 'text', required = false }) => (
             <div key={name}>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
@@ -26,14 +26,14 @@ const BookForm = ({ formData, onChange, onSubmit, onFileChange, submitLabel, onC
             </div>
         ))}
         <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
             <input
                 name="categoryName"
                 type="text"
                 value={formData.categoryName}
                 list="categories"
                 onChange={onChange}
-                placeholder="Enter or select category"
+                placeholder="Masukkan atau pilih kategori"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
             />
             <datalist id="categories">
@@ -43,7 +43,7 @@ const BookForm = ({ formData, onChange, onSubmit, onFileChange, submitLabel, onC
             </datalist>
         </div>
         <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Book Cover</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Sampul Buku</label>
             <input
                 type="file"
                 accept="image/*"

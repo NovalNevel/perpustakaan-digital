@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import InputField from '../components/ui/InputField';
-import Button from '../components/ui/Button';
-import auth from '../services/auth';
+import InputField from '../../components/ui/InputField.jsx';
+import Button from '../../components/ui/Button.jsx';
+import auth from '../../services/auth.jsx';
 import { toast } from 'react-toastify';
-import { SmoothCursor } from '@/components/magicui/smooth-cursor';
+import { SmoothCursor } from '@/components/magicui/smooth-cursor.js';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -50,7 +50,13 @@ const LoginPage = () => {
     }
 
     toast.success('Login successful!');
-    navigate('/dashboard');
+    const user = JSON.parse(sessionStorage.getItem('user'));
+
+    if (user?.role === 'ADMIN') {
+      navigate('/admin');
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   const handleBackClick = () => {

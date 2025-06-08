@@ -19,7 +19,7 @@ const BookCard = ({ book, loan, onEdit, onDelete, onBorrow, onReturn }) => {
                 </p>
                 <div className="text-xs text-gray-400 mb-3 space-y-1">
                     {book.publisher && <p>Penerbit: {book.publisher}</p>}
-                    {book.publicationYear && <p>Tahun: {book.publicationYear}</p>}
+                    {book.publicationYear && <p>Tahun Terbit: {book.publicationYear}</p>}
                     {book.shelf && <p>Rak: {book.shelf}</p>}
                     {book.location && <p>Lokasi: {book.location}</p>}
                 </div>
