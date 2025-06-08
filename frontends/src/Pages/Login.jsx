@@ -21,8 +21,6 @@ const LoginPage = () => {
     }
   };
 
-  const toggleShowPassword = () => setShowPassword((prev) => !prev);
-
   const validateForm = () => {
     const newErrors = {};
     if (!formData.email) {
@@ -65,20 +63,20 @@ const LoginPage = () => {
       style={{ backgroundImage: 'url("/images/bg_books.png")' }}
     >
       <SmoothCursor />
-      <div className="flex max-w-5xl w-full rounded-xl shadow-2xl backdrop-blur-md bg-white/90 overflow-hidden relative z-10">
+      <div className="flex flex-col sm:flex-row w-full max-w-5xl rounded-xl shadow-2xl backdrop-blur-md bg-white/90 overflow-hidden relative z-10 m-4">
         {/* Kiri */}
-        <div className="w-1/2 bg-[#002C4B] text-white flex flex-col justify-between items-center p-8">
+        <div className="w-full sm:w-1/2 bg-[#002C4B] text-white flex flex-col justify-between items-center p-6 sm:p-8">
           <div className="w-full flex flex-col items-center">
             <div className="w-full flex justify-start mb-4">
               <button onClick={handleBackClick} className="hover:opacity-70 transition">
                 <img src="/images/img_arrowleft.svg" alt="Kembali" className="w-6 h-6" />
               </button>
             </div>
-            <img src="/images/Profil.png" alt="Profile" className="w-[90px] h-[90px] mb-4" />
+            <img src="/images/Profil.png" alt="Profile" className="w-[70px] h-[70px] sm:w-[90px] sm:h-[90px] mb-4" />
           </div>
 
-          <div className="flex flex-col items-center mb-2">
-            <h2 className="text-[20px] font-semibold text-white text-center mb-4">
+          <div className="flex flex-col items-center mb-2 w-full">
+            <h2 className="text-[18px] sm:text-[20px] font-semibold text-white text-center mb-4">
               Belum Punya Akun?
             </h2>
             <Button
@@ -93,9 +91,13 @@ const LoginPage = () => {
         </div>
 
         {/* Kanan */}
-        <div className="w-1/2 p-12 flex flex-col justify-center">
-          <h1 className="text-4xl font-bold text-[#090446] mb-2">Login Member</h1>
-          <p className="text-lg text-[#090446] mb-6">Sign in to continue your progress</p>
+        <div className="w-full sm:w-1/2 p-6 sm:p-12 flex flex-col justify-center">
+          <h1 className="text-2xl sm:text-4xl font-bold text-[#090446] mb-2 text-center sm:text-left">
+            Login Member
+          </h1>
+          <p className="text-sm sm:text-lg text-[#090446] mb-6 text-center sm:text-left">
+            Sign in to continue your progress
+          </p>
           <form onSubmit={handleSubmit} className="space-y-4">
             <InputField
               label="Email"
