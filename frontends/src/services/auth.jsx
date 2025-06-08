@@ -1,8 +1,8 @@
-const BASE_URL = import.meta.env.VITE_BASE_API_URL;
+const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
 
 const auth = () => {
     const register = async (username, email, password, faculty, studyProgram, nim, role = 'USER') => {
-        const response = await fetch(`${BASE_URL}/api/auth/register`, {
+        const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -26,7 +26,7 @@ const auth = () => {
     };
 
     const login = async (email, password) => {
-        const response = await fetch(`${BASE_URL}/api/auth/login`, {
+        const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -64,7 +64,7 @@ const auth = () => {
             throw new Error("No refresh token available");
         }
 
-        const response = await fetch(`${BASE_URL}/api/auth/refresh`, {
+        const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -87,7 +87,7 @@ const auth = () => {
 
         if (refreshToken) {
             try {
-                await fetch(`${BASE_URL}/api/auth/logout`, {
+                await fetch(`${API_BASE_URL}/api/auth/logout`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

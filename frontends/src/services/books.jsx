@@ -1,7 +1,7 @@
 import fetchWithAuth from "./fetchWithAuth";
 
 // services/books.js
-const API_BASE_URL = 'https://perpustakaan-digital-production-9625.up.railway.app/api';
+const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
 
 class BooksService {
   // Helper method untuk mendapatkan authorization header
@@ -40,7 +40,7 @@ class BooksService {
   // Mengambil semua buku - menggunakan endpoint /api/books
   static async getAllBooks() {
     try {
-      const response = await fetchWithAuth(`${API_BASE_URL}/books`, {
+      const response = await fetch(`${API_BASE_URL}/api/books`, {
         headers: this.getAuthHeaders(),
       });
       return await this.handleApiResponse(response);
@@ -53,7 +53,7 @@ class BooksService {
   // Mengambil buku berdasarkan ID - menggunakan endpoint /api/books/:id
   static async getBookById(id) {
     try {
-      const response = await fetch(`${API_BASE_URL}/books/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/books/${id}`, {
         headers: this.getAuthHeaders(),
       });
       return await this.handleApiResponse(response);
@@ -72,7 +72,7 @@ class BooksService {
         throw new Error('Token tidak ditemukan. Silakan login kembali.');
       }
 
-      const response = await fetchWithAuth(`${API_BASE_URL}/books/my-loans`, {
+      const response = await fetch(`${API_BASE_URL}/api/books/my-loans`, {
         method: 'GET',
         headers: this.getAuthHeaders(),
       });
@@ -99,28 +99,6 @@ class BooksService {
     }
   }
 
-  // Test koneksi ke API
-  static async testConnection() {
-    try {
-      const response = await fetch(`${API_BASE_URL}/books`, {
-        method: 'GET',
-        headers: this.getAuthHeaders(),
-      });
-
-      return {
-        success: response.ok,
-        status: response.status,
-        message: response.ok ? 'Koneksi berhasil' : `HTTP ${response.status}`,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        status: 'ERROR',
-        message: error.message,
-      };
-    }
-  }
-
   // Mencari buku - menggunakan client-side filtering karena API tidak mendukung search parameter
   static async searchBooks(query) {
     try {
@@ -136,43 +114,12 @@ class BooksService {
             book.category.name.toLowerCase().includes(searchTerms)) ||
           (book.publisher && book.publisher.toLowerCase().includes(searchTerms))
       );
-      // Pastikan return array!
       return filteredBooks;
     } catch (error) {
       console.error('Error searching books:', error);
       return [];
     }
   }
-  // Fungsi untuk meminjam buku (jika API mendukung)
-  static async borrowBook(bookId) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/books/${bookId}/borrow`, {
-        method: 'POST',
-        headers: this.getAuthHeaders(),
-      });
-      return await this.handleApiResponse(response);
-    } catch (error) {
-      console.error('Error borrowing book:', error);
-      throw error;
-    }
-  }
-
-  // Fungsi untuk mengembalikan buku (jika API mendukung)
-  static async returnBook(bookId) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/books/${bookId}/return`, {
-        method: 'POST',
-        headers: this.getAuthHeaders(),
-      });
-      return await this.handleApiResponse(response);
-    } catch (error) {
-      console.error('Error returning book:', error);
-      throw error;
-    }
-  }
-
-  // Rest of the methods remain the same...
-  // (I'll keep the utility methods as they were since they're working fine)
 
   // Ekstrak semua kategori unik dari data buku
   static extractCategoriesFromBooks(books) {

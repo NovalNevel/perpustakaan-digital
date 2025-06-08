@@ -1,12 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import LoginPage from './Pages/Login';
-import RegisterPage from './Pages/Register';
-import Dashboard from './Pages/Dashboard';
-import Profile from './Pages/Profile';
-import BookDetail from './Pages/DetailBook';
-import DetailList from './Pages/DetailList';
+import LoginPage from './pages/auth/Login.jsx';
+import RegisterPage from './pages/auth/Register.jsx';
+import Dashboard from './pages/user/Dashboard.jsx';
+import Profile from './pages/user/Profile.jsx';
+import BookDetail from './pages/user/DetailBook.jsx';
+import DetailList from './pages/user/DetailList.jsx';
+import AdminDashboard from './Pages/admin/AdminDashboard';
 
 const AppRoutes = () => {
   return (
@@ -19,6 +20,8 @@ const AppRoutes = () => {
         <Route path="/book/:id" element={<BookDetail />} />
         <Route path="/category/:category" element={<DetailList />} />
         <Route path="/" element={<Dashboard />} /> {/* Default route redirects to dashboard */}
+        <Route path="/admin" element={<AdminDashboard />} />
+
       </Routes>
     </Router>
   );
