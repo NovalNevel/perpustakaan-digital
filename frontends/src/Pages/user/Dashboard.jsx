@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import BooksService from '../../services/books.jsx';
 import { SmoothCursor } from '@/components/magicui/smooth-cursor.js';
+import ButtonLihatSemua from '../../components/ui/ButtonLihatSemua.jsx'
 
 const Section = ({ title, books, loading, error }) => {
   const navigate = useNavigate();
@@ -51,39 +52,33 @@ const Section = ({ title, books, loading, error }) => {
     return (
       <section className="mt-12">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-[#012e4a]">{title}</h2>
-          <button
-            onClick={handleLihatSemua}
-            className="flex flex-col items-center justify-center px-[17px] py-[9px] w-[165px] h-[39px] min-h-[1px] bg-white border border-gray-300 rounded-[20px] text-black text-sm hover:bg-[#012e4a] hover:text-white transition-colors duration-300"
-          >
-            Lihat Semua →
-          </button>
-        </div>
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-          <p className="text-sm">
-            <span className="font-medium">Gagal memuat data buku.</span>
-            <br />
-            Silakan periksa koneksi internet Anda dan coba lagi nanti.
-          </p>
-        </div>
+  <h2 className="text-xl font-bold text-[#012e4a]">{title}</h2>
+  <ButtonLihatSemua
+    onClick={handleLihatSemua}
+    className="flex flex-col items-center justify-center px-[17px] py-[9px] w-[165px] h-[39px] min-h-[1px] bg-white border border-gray-300 rounded-[20px] text-black text-sm hover:bg-[#012e4a] hover:text-white transition-colors duration-300"
+  />
+</div>
+<div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+  <p className="text-sm">
+    <span className="font-medium">Gagal memuat data buku.</span> 
+    <br />Silakan periksa koneksi internet Anda dan coba lagi nanti.
+  </p>
+</div>
       </section>
     );
   }
 
   return (
     <section className="mt-12">
-      <div className="flex justify-between items-center mb-6">
-        <SmoothCursor />
-        <h2 className="text-xl font-bold text-[#012e4a]">{title}</h2>
-        {books.length > 0 && (
-          <button
-            onClick={handleLihatSemua}
-            className="flex flex-col items-center justify-center px-[17px] py-[9px] w-[165px] h-[39px] min-h-[1px] bg-white border border-gray-300 rounded-[20px] text-black text-sm hover:bg-[#012e4a] hover:text-white transition-colors duration-300 shadow-sm"
-          >
-            Lihat Semua →
-          </button>
-        )}
-      </div>
+       <div className="flex justify-between items-center mb-6">
+  <h2 className="text-xl font-bold text-[#012e4a]">{title}</h2>
+  {books.length > 0 && (
+    <ButtonLihatSemua
+      onClick={handleLihatSemua}
+      className="flex flex-col items-center justify-center px-[17px] py-[9px] w-[165px] h-[39px] min-h-[1px] bg-white border border-gray-300 rounded-[20px] text-black text-sm hover:bg-[#012e4a] hover:text-white transition-colors duration-300 shadow-sm"
+    />
+  )}
+</div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
         <SmoothCursor />
@@ -179,24 +174,22 @@ const CategoryFilter = ({ categories, loading, onCategoryClick }) => {
     <div className="py-8 bg-white">
       <SmoothCursor />
       <div className="flex flex-wrap gap-3 justify-center">
-        {categories.slice(0, 8).map((cat, i) => (
-          <button
-            key={i}
-            onClick={() => handleCategoryClick(cat)}
-            className="flex items-center justify-center px-4 py-2 min-w-[140px] h-[36px] bg-[#012E4A] text-white text-sm border border-[#012E4A] rounded-md shadow-sm hover:bg-[#014a6b] hover:shadow-md transition-all duration-300 font-medium"
-          >
-            {cat}
-          </button>
-        ))}
-        {categories.length > 8 && (
-          <button
-            onClick={() => navigate('/categories')}
-            className="flex items-center justify-center px-4 py-2 min-w-[140px] h-[36px] bg-white text-[#012E4A] text-sm border border-[#012E4A] rounded-md shadow-sm hover:bg-gray-50 transition-all duration-300 font-medium"
-          >
-            Lihat Semua
-          </button>
-        )}
-      </div>
+    {categories.slice(0, 8).map((cat, i) => (
+      <button
+        key={i}
+        onClick={() => handleCategoryClick(cat)}
+        className="flex items-center justify-center px-4 py-2 min-w-[140px] h-[36px] bg-[#012E4A] text-white text-sm border border-[#012E4A] rounded-md shadow-sm hover:bg-[#014a6b] hover:shadow-md transition-all duration-300 font-medium"
+      >
+        {cat}
+      </button>
+    ))}
+    {categories.length > 8 && (
+      <ButtonLihatSemua
+        onClick={() => navigate('/categories')}
+        className="flex items-center justify-center px-4 py-2 min-w-[140px] h-[36px] bg-white border border-[#012E4A] rounded-md shadow-sm hover:bg-gray-50 transition-all duration-300"
+      />
+    )}
+  </div>
     </div>
   );
 };
